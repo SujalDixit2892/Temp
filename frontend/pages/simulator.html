@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Data Simulator | FacilityOps</title>
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+
+<body>
+
+<div class="app">
+
+<aside class="sidebar">
+
+    <div class="brand">
+        <div class="brand-mark">F</div>
+        <div>
+            <strong>FacilityOps</strong>
+            <span>Intelligence Platform</span>
+        </div>
+    </div>
+
+    <div class="nav-section">
+        <label>COMMAND CENTER</label>
+        <a class="nav-item" href="index.html">Overview</a>
+    </div>
+
+    <div class="nav-section">
+        <label>OPERATIONS</label>
+        <a class="nav-item" href="energy.html">Energy Agent</a>
+        <a class="nav-item" href="maintenance.html">Maintenance Agent</a>
+        <a class="nav-item" href="occupancy.html">Occupancy Agent</a>
+        <a class="nav-item" href="security.html">Security Agent</a>
+        <a class="nav-item" href="cost.html">Cost Optimization</a>
+    </div>
+
+    <div class="nav-section">
+        <label>INTELLIGENCE</label>
+        <a class="nav-item" href="intelligence.html">AI Intelligence</a>
+        <a class="nav-item" href="activity.html">Agent Activity</a>
+    </div>
+
+    <div class="nav-section">
+        <label>SIMULATION</label>
+        <a class="nav-item active" href="simulator.html">Data Simulator</a>
+        <a class="nav-item" href="scenarios.html">Scenario Builder</a>
+    </div>
+
+    <div class="nav-section">
+        <label>REPORTING</label>
+        <a class="nav-item" href="alerts.html">Alerts</a>
+        <a class="nav-item" href="reports.html">Executive Reports</a>
+    </div>
+
+    <div class="sidebar-bottom">
+
+        <div class="system-status">
+            <span class="status-dot"></span>
+            Simulation engine ready
+        </div>
+
+        <div class="user-card">
+            <strong>Facility Admin</strong>
+            <span>Operations</span>
+        </div>
+
+    </div>
+
+</aside>
+
+
+<main class="main">
+
+<header class="topbar">
+
+    <div class="breadcrumb">
+        Facility Operations /
+        <strong>Data Simulator</strong>
+    </div>
+
+    <div class="topbar-right">
+        <span class="live">SIMULATION READY</span>
+    </div>
+
+</header>
+
+
+<section class="content agent-page">
+
+
+<div class="agent-header">
+
+    <div>
+
+        <p class="eyebrow">
+            OPERATIONAL DIGITAL TWIN
+        </p>
+
+        <h1>
+            Data Simulator
+        </h1>
+
+        <p>
+            Generate facility conditions and test how the
+            intelligence platform responds to changing
+            operational signals.
+        </p>
+
+    </div>
+
+    <div class="agent-controls">
+
+        <select id="facility">
+
+            <option>HQ Tower</option>
+            <option>Operations Center</option>
+            <option>Manufacturing Plant</option>
+            <option>Warehouse</option>
+
+        </select>
+
+        <select id="duration">
+
+            <option value="1">1 Day</option>
+            <option value="7" selected>7 Days</option>
+            <option value="30">30 Days</option>
+            <option value="90">90 Days</option>
+
+        </select>
+
+    </div>
+
+</div>
+
+
+<!-- INPUTS -->
+
+<section class="panel">
+
+    <div class="panel-header">
+
+        <div>
+            <span class="panel-label">
+                FACILITY CONDITIONS
+            </span>
+
+            <h2>
+                Configure Simulation
+            </h2>
+
+            <p class="test-lab-description">
+                Adjust operational conditions and run the
+                intelligence pipeline against the generated state.
+            </p>
+        </div>
+
+        <span class="result-status">
+            INPUT
+        </span>
+
+    </div>
+
+
+    <div class="test-fields">
+
+        <div class="test-field">
+            <label>OCCUPANCY %</label>
+
+            <input
+                id="occupancy"
+                type="number"
+                min="0"
+                max="100"
+                value="72"
+            >
+        </div>
+
+
+        <div class="test-field">
+            <label>ENERGY LOAD kW</label>
+
+            <input
+                id="energy"
+                type="number"
+                min="0"
+                value="640"
+            >
+        </div>
+
+
+        <div class="test-field">
+            <label>OUTDOOR TEMPERATURE °C</label>
+
+            <input
+                id="temperature"
+                type="number"
+                value="31"
+            >
+        </div>
+
+
+        <div class="test-field">
+            <label>EQUIPMENT HEALTH %</label>
+
+            <input
+                id="equipment"
+                type="number"
+                min="0"
+                max="100"
+                value="86"
+            >
+        </div>
+
+
+        <div class="test-field">
+            <label>SECURITY EVENTS</label>
+
+            <input
+                id="security"
+                type="number"
+                min="0"
+                value="2"
+            >
+        </div>
+
+
+        <div class="test-field">
+            <label>COST PRESSURE %</label>
+
+            <input
+                id="cost"
+                type="number"
+                min="0"
+                max="100"
+                value="38"
+            >
+        </div>
+
+    </div>
+
+
+    <div style="display:flex;gap:12px;margin-top:22px;">
+
+        <button
+            id="randomize"
+            class="test-button secondary"
+        >
+            GENERATE RANDOM CONDITIONS
+        </button>
+
+        <button
+            id="runSimulation"
+            class="test-button"
+        >
+            RUN FACILITY SIMULATION
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- GENERATED STATE -->
+
+<div class="dashboard-row">
+
+<section class="panel">
+
+    <div class="panel-header">
+
+        <div>
+            <span class="panel-label">
+                GENERATED STATE
+            </span>
+
+            <h2>
+                Facility Snapshot
+            </h2>
+        </div>
+
+        <span id="simulationStatus" class="result-status">
+            READY
+        </span>
+
+    </div>
+
+
+    <div class="agent-grid">
+
+        <div class="metric">
+            <span class="metric-label">OCCUPANCY</span>
+            <strong id="outOccupancy" class="metric-value">72%</strong>
+            <span class="metric-sub">Current utilization</span>
+        </div>
+
+        <div class="metric">
+            <span class="metric-label">ENERGY</span>
+            <strong id="outEnergy" class="metric-value">640</strong>
+            <span class="metric-sub">kWh operational load</span>
+        </div>
+
+        <div class="metric">
+            <span class="metric-label">TEMPERATURE</span>
+            <strong id="outTemperature" class="metric-value">31°C</strong>
+            <span class="metric-sub">Outdoor condition</span>
+        </div>
+
+        <div class="metric">
+            <span class="metric-label">EQUIPMENT</span>
+            <strong id="outEquipment" class="metric-value">86%</strong>
+            <span class="metric-sub">Asset health</span>
+        </div>
+
+        <div class="metric">
+            <span class="metric-label">SECURITY</span>
+            <strong id="outSecurity" class="metric-value">2</strong>
+            <span class="metric-sub">Detected events</span>
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="panel">
+
+    <div class="panel-header">
+
+        <div>
+            <span class="panel-label">
+                SIMULATED ML OUTPUT
+            </span>
+
+            <h2>
+                Facility Risk
+            </h2>
+        </div>
+
+    </div>
+
+    <div class="chart-box small">
+        <canvas id="riskChart"></canvas>
+    </div>
+
+</section>
+
+</div>
+
+
+<!-- RESULTS -->
+
+<div class="dashboard-row equal">
+
+<section class="panel">
+
+    <div class="panel-header">
+
+        <div>
+            <span class="panel-label">
+                ANOMALY ENGINE
+            </span>
+
+            <h2>
+                Detected Signals
+            </h2>
+        </div>
+    </div>
+
+    <div id="anomalies">
+
+        <div class="insight">
+            Run the simulation to detect operational anomalies.
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="panel">
+
+    <div class="panel-header">
+
+        <div>
+            <span class="panel-label">
+                AGENT ROUTING
+            </span>
+
+            <h2>
+                Recommended Agents
+            </h2>
+        </div>
+    </div>
+
+    <div id="agentRouting">
+
+        <div class="insight">
+            Agent routing will appear after simulation.
+        </div>
+
+    </div>
+
+</section>
+
+</div>
+
+
+<!-- RECOMMENDATION -->
+
+<section class="panel">
+
+    <div class="panel-header">
+
+        <div>
+            <span class="panel-label">
+                AI DECISION SUPPORT
+            </span>
+
+            <h2>
+                Simulation Recommendation
+            </h2>
+        </div>
+
+        <span id="recommendationStatus" class="result-status">
+            WAITING
+        </span>
+
+    </div>
+
+
+    <div id="recommendation" class="ai-output">
+
+        <div class="ai-output-header">
+            <span>FACILITY INTELLIGENCE</span>
+            <span class="result-status">READY</span>
+        </div>
+
+        <div class="ai-output-body">
+            Configure facility conditions and run a simulation
+            to generate an operational recommendation.
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- SCENARIO SUMMARY -->
+
+<section class="panel">
+
+    <div class="panel-header">
+
+        <div>
+            <span class="panel-label">
+                SIMULATION TRACE
+            </span>
+
+            <h2>
+                Intelligence Pipeline
+            </h2>
+        </div>
+    </div>
+
+
+    <div class="orchestrator">
+
+        <div class="orchestrator-node active">
+            <span class="node-number">01</span>
+            <strong>Input Data</strong>
+            <small>Facility conditions</small>
+        </div>
+
+        <div class="pipeline-line"></div>
+
+        <div class="orchestrator-node">
+            <span class="node-number">02</span>
+            <strong>ML Detection</strong>
+            <small>Anomaly scoring</small>
+        </div>
+
+        <div class="pipeline-line"></div>
+
+        <div class="orchestrator-node">
+            <span class="node-number">03</span>
+            <strong>Agent Analysis</strong>
+            <small>Specialized reasoning</small>
+        </div>
+
+        <div class="pipeline-line"></div>
+
+        <div class="orchestrator-node">
+            <span class="node-number">04</span>
+            <strong>AI Reasoning</strong>
+            <small>Context synthesis</small>
+        </div>
+
+        <div class="pipeline-line"></div>
+
+        <div class="orchestrator-node">
+            <span class="node-number">05</span>
+            <strong>Recommendation</strong>
+            <small>Operational action</small>
+        </div>
+
+    </div>
+
+</section>
+
+
+</section>
+
+</main>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="module" src="../assets/js/simulator.js"></script>
+
+</body>
+</html>

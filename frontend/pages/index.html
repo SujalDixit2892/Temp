@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FacilityOps Intelligence</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+
+<body>
+    <div class="app">
+
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">F</div>
+                <div>
+                    <strong>FacilityOps</strong>
+                    <span>Intelligence Platform</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <label>COMMAND CENTER</label>
+                <a class="nav-item active" href="index.html">Overview</a>
+            </div>
+
+            <div class="nav-section">
+                <label>OPERATIONS</label>
+                <a class="nav-item" href="energy.html">Energy</a>
+                <a class="nav-item" href="maintenance.html">Maintenance</a>
+                <a class="nav-item" href="occupancy.html">Occupancy</a>
+                <a class="nav-item" href="security.html">Security</a>
+                <a class="nav-item" href="cost.html">Cost Optimization</a>
+            </div>
+
+            <div class="nav-section">
+                <label>INTELLIGENCE</label>
+                <a class="nav-item" href="intelligence.html">AI Insights</a>
+                <a class="nav-item" href="activity.html">Agent Activity</a>
+            </div>
+
+            <div class="nav-section">
+                <label>SIMULATION</label>
+                <a class="nav-item" href="simulator.html">Data Simulator</a>
+                <a class="nav-item" href="scenarios.html">Scenario Builder</a>
+            </div>
+
+            <div class="nav-section">
+                <label>REPORTING</label>
+                <a class="nav-item" href="alerts.html">Alerts</a>
+                <a class="nav-item" href="reports.html">Executive Reports</a>
+            </div>
+
+            <div class="sidebar-bottom">
+                <div class="system-status">
+                    <span class="status-dot"></span>
+                    All systems operational
+                </div>
+                <div class="user-card">
+                    <div class="avatar">SA</div>
+                    <div>
+                        <strong>Facility Admin</strong>
+                        <span>Operations</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main">
+
+            <header class="topbar">
+                <div class="breadcrumb">
+                    Facility Operations / <strong>Overview</strong>
+                </div>
+
+                <div class="top-actions">
+                    <button>Search</button>
+                    <button>Notifications <span class="badge">4</span></button>
+                </div>
+            </header>
+
+            <section class="content">
+
+                <div class="page-heading">
+                    <div>
+                        <p class="eyebrow">FACILITY COMMAND CENTER</p>
+                        <h1>Operations Overview</h1>
+                        <p>Real-time intelligence across your facility operations.</p>
+                    </div>
+
+                    <div class="selector-group">
+                    <div class="selector-field">
+                        <span>FACILITY</span>
+                        <select id="facilitySelect">
+                            <option>HQ Tower</option>
+                            <option>Manufacturing Plant</option>
+                            <option>Tech Campus</option>
+                        </select>
+                    </div>
+
+                    <div class="selector-field">
+                        <span>RANGE</span>
+                        <select id="durationSelect">
+                            <option value="1D">1 Day</option>
+                            <option value="7D">7 Days</option>
+                            <option value="30D">30 Days</option>
+                        </select>
+                    </div>
+                </div>
+                </div>
+
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <span>Facility Health</span>
+                        <strong data-kpi="health">92.4</strong>
+                        <small class="positive">+3.8% vs last week</small>
+                    </div>
+
+                    <div class="kpi-card">
+                        <span>Energy Efficiency</span>
+                        <strong data-kpi="energy">87.6%</strong>
+                        <small class="positive">12.4% improvement</small>
+                    </div>
+
+                    <div class="kpi-card">
+                        <span>Asset Health</span>
+                        <strong data-kpi="asset">94.2%</strong>
+                        <small>3 assets require attention</small>
+                    </div>
+
+                    <div class="kpi-card">
+                        <span>Current Occupancy</span>
+                        <strong data-kpi="occupancy">68%</strong>
+                        <small>1,248 of 1,835 capacity</small>
+                    </div>
+
+                    <div class="kpi-card alert-card">
+                        <span>Active Alerts</span>
+                        <strong data-kpi="alerts">7</strong>
+                        <small>2 critical · 5 warnings</small>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+
+                    <section class="panel energy-panel">
+                        <div class="panel-header">
+                            <div>
+                                <span class="panel-label">ENERGY ANALYTICS</span>
+                                <h2>Consumption Intelligence</h2>
+                            </div>
+                            <div class="energy-controls">
+                                <div class="energy-actions" role="group" aria-label="Energy chart mode">
+                                    <button id="normalEnergyBtn" class="mode-btn active" type="button" aria-pressed="true">Normal</button>
+                                    <button id="anomalyEnergyBtn" class="mode-btn" type="button" aria-pressed="false">Inject Anomaly</button>
+                                </div>
+                                <span id="energyMode" class="energy-mode">Normal baseline</span>
+                            </div>
+                            <button class="panel-action">Last 24 hours</button>
+                        </div>
+
+                        <div class="chart-placeholder">
+                            <canvas id="energyChart" aria-label="Energy consumption chart"></canvas>
+                            <div id="energyAxis" class="chart-axis"></div>
+                        </div>
+                    </section>
+
+                    <section class="panel agents-panel">
+                        <div class="panel-header">
+                            <div>
+                                <span class="panel-label">AGENT NETWORK</span>
+                                <h2>Live Agent Activity</h2>
+                            </div>
+                            <span class="live">LIVE</span>
+                        </div>
+
+                        <div class="agent-row">
+                            <div class="agent-icon">E</div>
+                            <div class="agent-info">
+                                <strong>Energy Agent</strong>
+                                <span>Anomaly analysis completed</span>
+                            </div>
+                            <span class="agent-state">Active</span>
+                        </div>
+
+                        <div class="agent-row">
+                            <div class="agent-icon">M</div>
+                            <div class="agent-info">
+                                <strong>Maintenance Agent</strong>
+                                <span>3 assets being monitored</span>
+                            </div>
+                            <span class="agent-state">Active</span>
+                        </div>
+
+                        <div class="agent-row">
+                            <div class="agent-icon">O</div>
+                            <div class="agent-info">
+                                <strong>Occupancy Agent</strong>
+                                <span>Zone utilization updated</span>
+                            </div>
+                            <span class="agent-state">Active</span>
+                        </div>
+
+                        <div class="agent-row">
+                            <div class="agent-icon">S</div>
+                            <div class="agent-info">
+                                <strong>Security Agent</strong>
+                                <span>1 incident requires review</span>
+                            </div>
+                            <span class="agent-state warning">Review</span>
+                        </div>
+
+                        <div class="agent-row">
+                            <div class="agent-icon">C</div>
+                            <div class="agent-info">
+                                <strong>Cost Agent</strong>
+                                <span>Optimization analysis complete</span>
+                            </div>
+                            <span class="agent-state">Active</span>
+                        </div>
+                    </section>
+
+                    <section class="panel occupancy-panel">
+                        <div class="panel-header">
+                            <div>
+                                <span class="panel-label">OCCUPANCY INTELLIGENCE</span>
+                                <h2>Space Utilization</h2>
+                            </div>
+                        </div>
+
+                        <div class="heatmap">
+                            <div></div><div></div><div></div><div></div><div></div>
+                            <div></div><div></div><div></div><div></div><div></div>
+                            <div></div><div></div><div></div><div></div><div></div>
+                            <div></div><div></div><div></div><div></div><div></div>
+                        </div>
+                    </section>
+
+                    <section class="panel intelligence-panel">
+                        <div class="panel-header">
+                            <div>
+                                <span class="panel-label">FACILITY INTELLIGENCE</span>
+                                <h2>AI Recommendation</h2>
+                            </div>
+                            <span class="priority">HIGH PRIORITY</span>
+                        </div>
+
+                        <div class="recommendation">
+                            <strong>HVAC efficiency anomaly detected</strong>
+                            <p>
+                                Floor 3 is consuming above expected HVAC levels while
+                                occupancy remains below normal operating capacity.
+                            </p>
+
+                            <div class="recommendation-metrics">
+                                <div>
+                                    <span>Potential Savings</span>
+                                    <strong>₹38,400/mo</strong>
+                                </div>
+                                <div>
+                                    <span>Risk Level</span>
+                                    <strong>High</strong>
+                                </div>
+                            </div>
+
+                            <button class="primary-btn">View Recommendation</button>
+                        </div>
+                    </section>
+
+                </div>
+
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="../assets/js/app.js"></script>
+</body>
+</html>

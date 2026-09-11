@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Energy - FacilityOps{% endblock %}
+{% block content %}
+<h1>Energy Intelligence</h1>
+<p class="subtitle">Forecast + wastage detection, powered by a RandomForest trained on real consumption data.</p>
+
+<div class="panel">
+  <label for="facility-select">Facility</label><br /><br />
+  <select id="facility-select"></select>
+  <button id="analyze-btn">Analyze</button>
+</div>
+
+<div id="result"></div>
+
+<script>
+async function loadFacilities() {
+  const res = await fetch("/api/facilities?limit=200");
+  const facilities = await res.json();
+  const select = document.getElementById("facility-select");
+  select.innerHTML = facilities.map(f => `<option value="${f.facility_id}">${f.facility_id} (${f.facility_type})</option>`).join("");
+}
+
+function badge(text, kind) {
+  return `<span class="badge ${kind}">${text}</span>`;
+}
+
+async function analyze() {
+  const facilityId = document.getElementById("facility-select").value;
+  const resultDiv = document.getElementById("result");
+  resultDiv.innerHTML = `<div class="spinner">Running analysis for ${facilityId}...</div>`;
+
+  try {
+    const res = await fetch(`/api/energy/${facilityId}/analyze`);
+    const data = await res.json();
+
+    if (data.degraded && !data.analysis) {
+      resultDiv.innerHTML = `<div class="empty-state">No analysis available: ${data.degradation_reason}</div>`;
+      return;
+    }
+
+    const a = data.analysis;
+    const wastageBadge = a.wastage_days_count > 0
+      ? badge(`${a.wastage_days_count} wastage day(s) flagged`, "warn")
+      : badge("No wastage flagged", "good");
+
+    let anomalyRows = "";
+    if (a.anomalies && a.anomalies.length) {
+      anomalyRows = a.anomalies.map(x => `
+        <tr>
+          <td>${x.date}</td>
+          <td>${x.actual_kwh} kWh</td>
+          <td>${x.predicted_kwh} kWh</td>
+          <td>+${x.excess_pct}%</td>
+        </tr>
+      `).join("");
+    }
+
+    resultDiv.innerHTML = `
+      <h2>Results</h2>
+      <div class="metrics">
+        <div class="metric"><div class="label">Forecast next day</div><div class="value">${a.forecast_next_day_kwh} kWh</div></div>
+        <div class="metric"><div class="label">Days evaluated</div><div class="value">${a.days_evaluated}</div></div>
+        <div class="metric"><div class="label">Status</div><div class="value">${wastageBadge}</div></div>
+      </div>
+
+      <h2>Recommendation</h2>
+      <div class="recommendation">
+        ${data.recommendation.text}
+        <div class="source">source: ${data.recommendation.source} — model MAE: ${data.provenance.model_mae} kWh</div>
+      </div>
+
+      ${anomalyRows ? `
+        <h2>Flagged days</h2>
+        <div class="panel">
+          <table>
+            <thead><tr><th>Date</th><th>Actual</th><th>Predicted</th><th>Excess</th></tr></thead>
+            <tbody>${anomalyRows}</tbody>
+          </table>
+        </div>
+      ` : ""}
+    `;
+  } catch (err) {
+    resultDiv.innerHTML = `<div class="empty-state">Request failed: ${err}</div>`;
+  }
+}
+
+document.getElementById("analyze-btn").addEventListener("click", analyze);
+loadFacilities().then(analyze);
+</script>
+{% endblock %}

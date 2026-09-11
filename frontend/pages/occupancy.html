@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Occupancy Agent | FacilityOps</title>
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+<div class="app">
+
+<aside class="sidebar">
+    <div class="brand">
+        <div class="brand-mark">F</div>
+        <div><strong>FacilityOps</strong><span>Intelligence Platform</span></div>
+    </div>
+
+    <div class="nav-section">
+        <label>COMMAND CENTER</label>
+        <a class="nav-item" href="index.html">Overview</a>
+    </div>
+
+    <div class="nav-section">
+        <label>OPERATIONS</label>
+        <a class="nav-item" href="energy.html">Energy Agent</a>
+        <a class="nav-item" href="maintenance.html">Maintenance Agent</a>
+        <a class="nav-item active" href="occupancy.html">Occupancy Agent</a>
+        <a class="nav-item" href="security.html">Security Agent</a>
+        <a class="nav-item" href="cost.html">Cost Optimization</a>
+    </div>
+
+    <div class="nav-section">
+        <label>INTELLIGENCE</label>
+        <a class="nav-item" href="intelligence.html">AI Intelligence</a>
+        <a class="nav-item" href="activity.html">Agent Activity</a>
+    </div>
+
+    <div class="nav-section">
+        <label>SIMULATION</label>
+        <a class="nav-item" href="simulator.html">Data Simulator</a>
+        <a class="nav-item" href="scenarios.html">Scenario Builder</a>
+    </div>
+
+    <div class="nav-section">
+        <label>REPORTING</label>
+        <a class="nav-item" href="alerts.html">Alerts</a>
+        <a class="nav-item" href="reports.html">Executive Reports</a>
+    </div>
+
+    <div class="sidebar-bottom">
+        <div class="system-status">
+            <span class="status-dot"></span>
+            All systems operational
+        </div>
+        <div class="user-card">
+            <strong>Facility Admin</strong>
+            <span>Operations</span>
+        </div>
+    </div>
+</aside>
+
+<main class="main">
+
+<header class="topbar">
+    <div class="breadcrumb">
+        Facility Operations / <strong>Occupancy Agent</strong>
+    </div>
+</header>
+
+<section class="content agent-page">
+
+<div class="agent-header">
+    <div>
+        <p class="eyebrow">SPACE UTILIZATION</p>
+        <h1>Occupancy Agent</h1>
+        <p>Zone utilization monitoring, crowding detection and security signals.</p>
+    </div>
+
+    <div class="agent-controls">
+        <select id="facility"></select>
+        <select id="duration">
+            <option value="1D">1 Day</option>
+            <option value="7D">7 Days</option>
+            <option value="30D">30 Days</option>
+            <option value="90D">90 Days</option>
+        </select>
+    </div>
+</div>
+
+<div class="agent-grid">
+
+    <div class="metric">
+        <span class="metric-label">ZONES MONITORED</span>
+        <strong id="assetCount" class="metric-value">--</strong>
+        <span class="metric-sub">Live facility zones</span>
+    </div>
+
+    <div class="metric">
+        <span class="metric-label">AVG UTILIZATION</span>
+        <strong id="healthScore" class="metric-value">--</strong>
+        <span class="metric-sub">Selected window average</span>
+    </div>
+
+    <div class="metric">
+        <span class="metric-label">OVER CAPACITY</span>
+        <strong id="highRisk" class="metric-value">--</strong>
+        <span class="metric-sub">Zones marked overcrowded</span>
+    </div>
+
+    <div class="metric">
+        <span class="metric-label">SECURITY EVENTS</span>
+        <strong id="predictedFailures" class="metric-value">--</strong>
+        <span class="metric-sub">Recent access activity</span>
+    </div>
+
+    <div class="metric">
+        <span class="metric-label">STATUS</span>
+        <strong id="status" class="metric-value">READY</strong>
+        <span class="metric-sub">Agent state</span>
+    </div>
+
+</div>
+
+<div class="dashboard-row">
+
+<section class="panel">
+    <div class="panel-header">
+        <div>
+            <span class="panel-label">ZONE UTILIZATION</span>
+            <h2>Occupancy by Zone</h2>
+        </div>
+        <span class="live">LIVE DATA</span>
+    </div>
+    <div class="chart-box">
+        <canvas id="occupancyChart"></canvas>
+    </div>
+</section>
+
+<section class="panel">
+    <div class="panel-header">
+        <div>
+            <span class="panel-label">ZONE STATUS</span>
+            <h2>Zones Requiring Attention</h2>
+        </div>
+    </div>
+    <div id="assetList"></div>
+</section>
+
+</div>
+
+<div class="dashboard-row">
+
+<section class="panel">
+    <div class="panel-header">
+        <div>
+            <span class="panel-label">AGENT TEST LAB</span>
+            <h2>Test a Zone</h2>
+        </div>
+    </div>
+
+    <div class="test-fields">
+
+        <div class="test-field">
+            <label>ZONE</label>
+            <input id="zone" value="Floor 3">
+        </div>
+
+        <div class="test-field">
+            <label>OCCUPANCY COUNT</label>
+            <input id="occupancy" type="number" value="72">
+        </div>
+
+        <div class="test-field">
+            <label>CAPACITY</label>
+            <input id="capacity" type="number" value="100">
+        </div>
+
+        <div class="test-field">
+            <label>TIME</label>
+            <input id="time" type="time" value="14:00">
+        </div>
+
+    </div>
+
+    <button id="runTest" class="test-button">
+        RUN ZONE ANALYSIS
+    </button>
+
+    <div class="agent-result">
+        <span id="testStatus" class="result-status">WAITING</span>
+        <div id="testResult" class="insight">
+            Select a zone and run the agent to inspect its utilization.
+        </div>
+    </div>
+
+</section>
+
+<section class="panel">
+
+    <div class="panel-header">
+        <div>
+            <span class="panel-label">AGENT REASONING</span>
+            <h2>Occupancy Recommendation</h2>
+        </div>
+    </div>
+
+    <div id="recommendation" class="insight">
+        Occupancy recommendations will appear after analysis.
+    </div>
+
+</section>
+
+</div>
+
+</section>
+</main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="module" src="../assets/js/occupancy.js"></script>
+</body>
+</html>

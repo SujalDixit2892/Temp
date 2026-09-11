@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Home - FacilityOps{% endblock %}
+{% block content %}
+<h1>Agentic FacilityOps AI Platform</h1>
+<p class="subtitle">{{ facility_count }} facilities under management.</p>
+
+<div class="panel">
+  <table>
+    <thead>
+      <tr><th>Facility ID</th><th>Type</th><th>Area (sqft)</th><th>Floors</th></tr>
+    </thead>
+    <tbody>
+      {% for f in facilities %}
+      <tr>
+        <td>{{ f.facility_id }}</td>
+        <td>{{ f.facility_type }}</td>
+        <td>{{ "{:,}".format(f.total_area_sqft) }}</td>
+        <td>{{ f.total_floors }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<p class="subtitle">Showing first {{ facilities|length }} of {{ facility_count }}. Use Energy or Maintenance to inspect a specific facility.</p>
+{% endblock %}

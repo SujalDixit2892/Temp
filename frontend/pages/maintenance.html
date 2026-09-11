@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Maintenance Agent | FacilityOps</title>
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+<div class="app">
+
+<aside class="sidebar">
+    <div class="brand">
+        <div class="brand-mark">F</div>
+        <div><strong>FacilityOps</strong><span>Intelligence Platform</span></div>
+    </div>
+
+    <div class="nav-section">
+        <label>COMMAND CENTER</label>
+        <a class="nav-item" href="index.html">Overview</a>
+    </div>
+
+    <div class="nav-section">
+        <label>OPERATIONS</label>
+        <a class="nav-item" href="energy.html">Energy Agent</a>
+        <a class="nav-item active" href="maintenance.html">Maintenance Agent</a>
+        <a class="nav-item" href="occupancy.html">Occupancy Agent</a>
+        <a class="nav-item" href="security.html">Security Agent</a>
+        <a class="nav-item" href="cost.html">Cost Optimization</a>
+    </div>
+
+    <div class="nav-section">
+        <label>INTELLIGENCE</label>
+        <a class="nav-item" href="intelligence.html">AI Intelligence</a>
+        <a class="nav-item" href="activity.html">Agent Activity</a>
+    </div>
+
+    <div class="nav-section">
+        <label>SIMULATION</label>
+        <a class="nav-item" href="simulator.html">Data Simulator</a>
+        <a class="nav-item" href="scenarios.html">Scenario Builder</a>
+    </div>
+
+    <div class="nav-section">
+        <label>REPORTING</label>
+        <a class="nav-item" href="alerts.html">Alerts</a>
+        <a class="nav-item" href="reports.html">Executive Reports</a>
+    </div>
+
+    <div class="sidebar-bottom">
+        <div class="system-status">
+            <span class="status-dot"></span>
+            All systems operational
+        </div>
+        <div class="user-card">
+            <strong>Facility Admin</strong>
+            <span>Operations</span>
+        </div>
+    </div>
+</aside>
+
+<main class="main">
+
+<header class="topbar">
+    <div class="breadcrumb">
+        Facility Operations / <strong>Maintenance Agent</strong>
+    </div>
+</header>
+
+<section class="content agent-page">
+
+<div class="agent-header">
+    <div>
+        <p class="eyebrow">PREDICTIVE MAINTENANCE</p>
+        <h1>Maintenance Agent</h1>
+        <p>Asset health monitoring, failure prediction and maintenance prioritization.</p>
+    </div>
+
+    <div class="agent-controls">
+        <select id="facility"></select>
+        <select id="duration">
+            <option value="1D">1 Day</option>
+            <option value="7D">7 Days</option>
+            <option value="30D">30 Days</option>
+            <option value="90D">90 Days</option>
+        </select>
+    </div>
+</div>
+
+<div class="agent-grid">
+
+    <div class="metric">
+        <span class="metric-label">ASSETS MONITORED</span>
+        <strong id="assetCount" class="metric-value">--</strong>
+        <span class="metric-sub">Live facility inventory</span>
+    </div>
+
+    <div class="metric">
+        <span class="metric-label">HEALTH SCORE</span>
+        <strong id="healthScore" class="metric-value">--</strong>
+        <span class="metric-sub">Overall asset condition</span>
+    </div>
+
+    <div class="metric">
+        <span class="metric-label">HIGH RISK</span>
+        <strong id="highRisk" class="metric-value">--</strong>
+        <span class="metric-sub">Require attention</span>
+    </div>
+
+    <div class="metric">
+        <span class="metric-label">PREDICTED FAILURES</span>
+        <strong id="predictedFailures" class="metric-value">--</strong>
+        <span class="metric-sub">Model assessment</span>
+    </div>
+
+    <div class="metric">
+        <span class="metric-label">STATUS</span>
+        <strong id="status" class="metric-value">READY</strong>
+        <span class="metric-sub">Agent state</span>
+    </div>
+
+</div>
+
+<div class="dashboard-row">
+
+<section class="panel">
+    <div class="panel-header">
+        <div>
+            <span class="panel-label">ASSET HEALTH</span>
+            <h2>Maintenance Risk Distribution</h2>
+        </div>
+        <span class="live">ML ACTIVE</span>
+    </div>
+    <div class="chart-box">
+        <canvas id="maintenanceChart"></canvas>
+    </div>
+</section>
+
+<section class="panel">
+    <div class="panel-header">
+        <div>
+            <span class="panel-label">PRIORITY QUEUE</span>
+            <h2>Assets Requiring Attention</h2>
+        </div>
+    </div>
+    <div id="assetList"></div>
+</section>
+
+</div>
+
+<div class="dashboard-row">
+
+<section class="panel">
+    <div class="panel-header">
+        <div>
+            <span class="panel-label">AGENT TEST LAB</span>
+            <h2>Test an Asset</h2>
+        </div>
+    </div>
+
+    <div class="test-fields">
+
+        <div class="test-field">
+            <label>ASSET</label>
+            <select id="asset"></select>
+        </div>
+
+        <div class="test-field">
+            <label>SIMULATED TEMPERATURE</label>
+            <input id="temperature" type="number" value="72">
+        </div>
+
+        <div class="test-field">
+            <label>VIBRATION</label>
+            <input id="vibration" type="number" value="0.35" step="0.01">
+        </div>
+
+        <div class="test-field">
+            <label>RUNTIME HOURS</label>
+            <input id="runtime" type="number" value="4200">
+        </div>
+
+    </div>
+
+    <button id="runTest" class="test-button">
+        RUN MAINTENANCE ANALYSIS
+    </button>
+
+    <div class="agent-result">
+        <span id="testStatus" class="result-status">WAITING</span>
+        <div id="testResult" class="insight">
+            Select an asset and run the agent to inspect its predicted condition.
+        </div>
+    </div>
+
+</section>
+
+<section class="panel">
+
+    <div class="panel-header">
+        <div>
+            <span class="panel-label">AGENT REASONING</span>
+            <h2>Maintenance Recommendation</h2>
+        </div>
+    </div>
+
+    <div id="recommendation" class="insight">
+        Maintenance recommendations will appear after analysis.
+    </div>
+
+</section>
+
+</div>
+
+</section>
+</main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="module" src="../assets/js/maintenance.js"></script>
+</body>
+</html>

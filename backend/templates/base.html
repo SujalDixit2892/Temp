@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{% block title %}FacilityOps{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <nav>
+    <span class="brand">Agentic FacilityOps</span>
+    <a href="/" class="{{ 'active' if active == 'home' else '' }}">Home</a>
+    <a href="/energy" class="{{ 'active' if active == 'energy' else '' }}">Energy</a>
+    <a href="/maintenance" class="{{ 'active' if active == 'maintenance' else '' }}">Maintenance</a>
+    <a href="/occupancy" class="{{ 'active' if active == 'occupancy' else '' }}">Occupancy & Security</a>
+  </nav>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

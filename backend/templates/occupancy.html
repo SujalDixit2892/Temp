@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Occupancy & Security - FacilityOps{% endblock %}
+{% block content %}
+<h1>Occupancy & Security</h1>
+<p class="subtitle">Zone occupancy vs. model-expected levels, plus live anomaly detection on access-control events.</p>
+
+<div class="panel">
+  <label for="facility-select">Facility</label><br /><br />
+  <select id="facility-select"></select>
+  <button id="analyze-btn">Analyze</button>
+</div>
+
+<div id="result"></div>
+
+<script>
+async function loadFacilities() {
+  const res = await fetch("/api/facilities?limit=200");
+  const facilities = await res.json();
+  const select = document.getElementById("facility-select");
+  select.innerHTML = facilities.map(f => `<option value="${f.facility_id}">${f.facility_id} (${f.facility_type})</option>`).join("");
+}
+
+function occupancyBadge(z) {
+  if (z.status === "no_data") return `<span class="badge muted">no data</span>`;
+  if (z.status === "overcrowded") return `<span class="badge bad">Overcrowded (${z.utilization_pct}%)</span>`;
+  return `<span class="badge good">${z.utilization_pct}%</span>`;
+}
+
+async function analyze() {
+  const facilityId = document.getElementById("facility-select").value;
+  const resultDiv = document.getElementById("result");
+  resultDiv.innerHTML = `<div class="spinner">Analyzing ${facilityId}...</div>`;
+
+  try {
+    const res = await fetch(`/api/occupancy/${facilityId}/analyze`);
+    const data = await res.json();
+
+    const occ = data.occupancy;
+    const sec = data.security;
+
+    let zoneRows = "";
+    if (!occ.degraded) {
+      zoneRows = occ.zones.map(z => `
+        <tr>
+          <td>${z.zone_type}</td>
+          <td>${z.latest_count ?? "—"} / ${z.max_capacity}</td>
+          <td>${z.expected_count ?? "—"}</td>
+          <td>${occupancyBadge(z)}</td>
+        </tr>
+      `).join("");
+    }
+
+    const threatBadge = sec.threat_level === "High"
+      ? `<span class="badge bad">High</span>`
+      : `<span class="badge good">Low</span>`;
+
+    resultDiv.innerHTML = `
+      <h2>Occupancy</h2>
+      ${occ.degraded ? `<div class="empty-state">No occupancy model available: ${occ.degradation_reason}</div>` : `
+        <div class="panel">
+          <table>
+            <thead><tr><th>Zone</th><th>Current / Capacity</th><th>Expected (model)</th><th>Status</th></tr></thead>
+            <tbody>${zoneRows}</tbody>
+          </table>
+        </div>
+      `}
+
+      <h2>Security</h2>
+      <div class="metrics">
+        <div class="metric"><div class="label">Threat level</div><div class="value">${threatBadge}</div></div>
+        <div class="metric"><div class="label">Total events (30d)</div><div class="value">${sec.total_events}</div></div>
+        <div class="metric"><div class="label">Active threats</div><div class="value">${sec.active_threats.length}</div></div>
+        <div class="metric"><div class="label">Unusual patterns</div><div class="value">${sec.anomalies.length}</div></div>
+      </div>
+
+      <h2>Recommendation</h2>
+      <div class="recommendation">
+        ${data.recommendation.text}
+        <div class="source">source: ${data.recommendation.source}</div>
+      </div>
+    `;
+  } catch (err) {
+    resultDiv.innerHTML = `<div class="empty-state">Request failed: ${err}</div>`;
+  }
+}
+
+document.getElementById("analyze-btn").addEventListener("click", analyze);
+loadFacilities().then(analyze);
+</script>
+{% endblock %}

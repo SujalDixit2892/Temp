@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Maintenance - FacilityOps{% endblock %}
+{% block content %}
+<h1>Predictive Maintenance</h1>
+<p class="subtitle">Failure prediction + fault diagnosis, powered by models trained on the real AI4I 2020 Predictive Maintenance Dataset.</p>
+
+<div class="panel">
+  <label for="facility-select">Facility</label><br /><br />
+  <select id="facility-select"></select>
+  <button id="load-btn">Load Assets</button>
+</div>
+
+<div id="result"></div>
+<div id="work-order-panel"></div>
+
+<script>
+async function loadFacilities() {
+  const res = await fetch("/api/facilities?limit=200");
+  const facilities = await res.json();
+  const select = document.getElementById("facility-select");
+  select.innerHTML = facilities.map(f => `<option value="${f.facility_id}">${f.facility_id} (${f.facility_type})</option>`).join("");
+}
+
+function riskBadge(a) {
+  if (a.status !== "success") return `<span class="badge muted">no data</span>`;
+  if (a.failure_probability >= 0.5) return `<span class="badge bad">${(a.failure_probability*100).toFixed(1)}% risk</span>`;
+  if (a.failure_probability >= 0.15) return `<span class="badge warn">${(a.failure_probability*100).toFixed(1)}% risk</span>`;
+  return `<span class="badge good">${(a.failure_probability*100).toFixed(1)}% risk</span>`;
+}
+
+async function showWorkOrder(assetId) {
+  const panel = document.getElementById("work-order-panel");
+  panel.innerHTML = `<div class="spinner">Generating work order for ${assetId}...</div>`;
+  const res = await fetch(`/api/maintenance/asset/${assetId}/analyze`);
+  const data = await res.json();
+  if (data.degraded) {
+    panel.innerHTML = `<div class="empty-state">No work order available: ${data.degradation_reason}</div>`;
+    return;
+  }
+  panel.innerHTML = `
+    <h2>Work Order — ${assetId}</h2>
+    <div class="recommendation">
+      ${data.work_order.text}
+      <div class="source">source: ${data.work_order.source}</div>
+    </div>
+  `;
+}
+
+async function loadAssets() {
+  const facilityId = document.getElementById("facility-select").value;
+  const resultDiv = document.getElementById("result");
+  document.getElementById("work-order-panel").innerHTML = "";
+  resultDiv.innerHTML = `<div class="spinner">Loading assets for ${facilityId}...</div>`;
+
+  try {
+    const res = await fetch(`/api/maintenance/${facilityId}/assets`);
+    const data = await res.json();
+
+    if (data.degraded) {
+      resultDiv.innerHTML = `<div class="empty-state">No data available: ${data.degradation_reason}</div>`;
+      return;
+    }
+
+    const s = data.summary;
+    const rows = data.assets.map(a => `
+      <tr>
+        <td>${a.asset_id || "—"}</td>
+        <td>${a.asset_type || "—"}</td>
+        <td>${a.status === "success" ? a.health_score + "/100" : "—"}</td>
+        <td>${riskBadge(a)}</td>
+        <td>${a.status === "success" ? a.predicted_issue : "no telemetry"}</td>
+        <td>${a.status === "success" ? `<button onclick="showWorkOrder('${a.asset_id}')">Work Order</button>` : ""}</td>
+      </tr>
+    `).join("");
+
+    resultDiv.innerHTML = `
+      <h2>Facility Summary</h2>
+      <div class="metrics">
+        <div class="metric"><div class="label">Avg. health score</div><div class="value">${s.facility_health_score ?? "—"}</div></div>
+        <div class="metric"><div class="label">Assets</div><div class="value">${s.asset_count}</div></div>
+        <div class="metric"><div class="label">High-risk assets</div><div class="value">${s.high_risk_count}</div></div>
+      </div>
+
+      <h2>Assets</h2>
+      <div class="panel">
+        <table>
+          <thead><tr><th>Asset</th><th>Type</th><th>Health</th><th>Risk</th><th>Diagnosis</th><th></th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    `;
+  } catch (err) {
+    resultDiv.innerHTML = `<div class="empty-state">Request failed: ${err}</div>`;
+  }
+}
+
+document.getElementById("load-btn").addEventListener("click", loadAssets);
+loadFacilities().then(loadAssets);
+</script>
+{% endblock %}

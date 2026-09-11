@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Intelligence | FacilityOps</title>
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+
+<body>
+
+<div class="app">
+
+<aside class="sidebar">
+
+    <div class="brand">
+        <div class="brand-mark">F</div>
+
+        <div>
+            <strong>FacilityOps</strong>
+            <span>Intelligence Platform</span>
+        </div>
+    </div>
+
+    <div class="nav-section">
+        <label>COMMAND CENTER</label>
+        <a class="nav-item" href="index.html">Overview</a>
+    </div>
+
+    <div class="nav-section">
+        <label>OPERATIONS</label>
+        <a class="nav-item" href="energy.html">Energy Agent</a>
+        <a class="nav-item" href="maintenance.html">Maintenance Agent</a>
+        <a class="nav-item" href="occupancy.html">Occupancy Agent</a>
+        <a class="nav-item" href="security.html">Security Agent</a>
+        <a class="nav-item" href="cost.html">Cost Optimization</a>
+    </div>
+
+    <div class="nav-section">
+        <label>INTELLIGENCE</label>
+        <a class="nav-item active" href="intelligence.html">
+            AI Intelligence
+        </a>
+        <a class="nav-item" href="activity.html">
+            Agent Activity
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <label>SIMULATION</label>
+        <a class="nav-item" href="simulator.html">
+            Data Simulator
+        </a>
+        <a class="nav-item" href="scenarios.html">
+            Scenario Builder
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <label>REPORTING</label>
+        <a class="nav-item" href="alerts.html">Alerts</a>
+        <a class="nav-item" href="reports.html">
+            Executive Reports
+        </a>
+    </div>
+
+    <div class="sidebar-bottom">
+
+        <div class="system-status">
+            <span class="status-dot"></span>
+            AI orchestration active
+        </div>
+
+        <div class="user-card">
+            <strong>Facility Admin</strong>
+            <span>Operations</span>
+        </div>
+
+    </div>
+
+</aside>
+
+
+<main class="main">
+
+<header class="topbar">
+
+    <div class="breadcrumb">
+        Facility Operations /
+        <strong>AI Intelligence</strong>
+    </div>
+
+    <div class="topbar-right">
+        <span class="live">AI ONLINE</span>
+    </div>
+
+</header>
+
+
+<section class="content agent-page">
+
+
+<!-- HEADER -->
+
+<div class="agent-header">
+
+    <div>
+
+        <p class="eyebrow">
+            AGENTIC OPERATIONS INTELLIGENCE
+        </p>
+
+        <h1>
+            AI Intelligence
+        </h1>
+
+        <p>
+            Cross-agent reasoning, operational context and
+            prioritized recommendations across the facility.
+        </p>
+
+    </div>
+
+
+    <div class="agent-controls">
+
+        <select id="facility">
+
+            <option>HQ Tower</option>
+            <option>Operations Center</option>
+            <option>Manufacturing Plant</option>
+            <option>Warehouse</option>
+
+        </select>
+
+
+        <select id="duration">
+
+            <option value="1">
+                1 Day
+            </option>
+
+            <option value="7" selected>
+                7 Days
+            </option>
+
+            <option value="30">
+                30 Days
+            </option>
+
+            <option value="90">
+                90 Days
+            </option>
+
+        </select>
+
+    </div>
+
+</div>
+
+
+<!-- AI STATUS -->
+
+<div class="agent-grid">
+
+    <div class="metric">
+
+        <span class="metric-label">
+            FACILITY HEALTH
+        </span>
+
+        <strong
+            id="healthScore"
+            class="metric-value"
+        >
+            86
+        </strong>
+
+        <span class="metric-sub">
+            Cross-agent assessment
+        </span>
+
+    </div>
+
+
+    <div class="metric">
+
+        <span class="metric-label">
+            ACTIVE AGENTS
+        </span>
+
+        <strong
+            id="activeAgents"
+            class="metric-value"
+        >
+            5
+        </strong>
+
+        <span class="metric-sub">
+            Monitoring facility
+        </span>
+
+    </div>
+
+
+    <div class="metric">
+
+        <span class="metric-label">
+            FINDINGS
+        </span>
+
+        <strong
+            id="findingCount"
+            class="metric-value"
+        >
+            12
+        </strong>
+
+        <span class="metric-sub">
+            Detected signals
+        </span>
+
+    </div>
+
+
+    <div class="metric">
+
+        <span class="metric-label">
+            HIGH PRIORITY
+        </span>
+
+        <strong
+            id="priorityCount"
+            class="metric-value"
+        >
+            3
+        </strong>
+
+        <span class="metric-sub">
+            Require attention
+        </span>
+
+    </div>
+
+
+    <div class="metric">
+
+        <span class="metric-label">
+            AI STATUS
+        </span>
+
+        <strong
+            id="aiStatus"
+            class="metric-value"
+        >
+            READY
+        </strong>
+
+        <span class="metric-sub">
+            Reasoning engine
+        </span>
+
+    </div>
+
+</div>
+
+
+<!-- ORCHESTRATOR -->
+
+<section class="panel">
+
+    <div class="panel-header">
+
+        <div>
+
+            <span class="panel-label">
+                AGENT ORCHESTRATOR
+            </span>
+
+            <h2>
+                Facility Intelligence Pipeline
+            </h2>
+
+        </div>
+
+        <span
+            id="orchestratorStatus"
+            class="result-status"
+        >
+            MONITORING
+        </span>
+
+    </div>
+
+
+    <div class="orchestrator">
+
+        <div class="orchestrator-node active">
+
+            <span class="node-number">
+                01
+            </span>
+
+            <strong>
+                Facility Signals
+            </strong>
+
+            <small>
+                Sensor & operational data
+            </small>
+
+        </div>
+
+
+        <div class="pipeline-line"></div>
+
+
+        <div class="orchestrator-node active">
+
+            <span class="node-number">
+                02
+            </span>
+
+            <strong>
+                Agent Analysis
+            </strong>
+
+            <small>
+                Specialized intelligence
+            </small>
+
+        </div>
+
+
+        <div class="pipeline-line"></div>
+
+
+        <div class="orchestrator-node active">
+
+            <span class="node-number">
+                03
+            </span>
+
+            <strong>
+                Cross-Agent Context
+            </strong>
+
+            <small>
+                Correlation & conflicts
+            </small>
+
+        </div>
+
+
+        <div class="pipeline-line"></div>
+
+
+        <div class="orchestrator-node active">
+
+            <span class="node-number">
+                04
+            </span>
+
+            <strong>
+                AI Reasoning
+            </strong>
+
+            <small>
+                Recommendation generation
+            </small>
+
+        </div>
+
+
+        <div class="pipeline-line"></div>
+
+
+        <div class="orchestrator-node active">
+
+            <span class="node-number">
+                05
+            </span>
+
+            <strong>
+                Action Plan
+            </strong>
+
+            <small>
+                Prioritized operations
+            </small>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- AGENT STATUS + PRIORITIES -->
+
+<div class="dashboard-row equal">
+
+
+<section class="panel">
+
+    <div class="panel-header">
+
+        <div>
+
+            <span class="panel-label">
+                SPECIALIZED AGENTS
+            </span>
+
+            <h2>
+                Agent Status
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <div id="agentStatusList"></div>
+
+</section>
+
+
+<section class="panel">
+
+    <div class="panel-header">
+
+        <div>
+
+            <span class="panel-label">
+                PRIORITIZATION ENGINE
+            </span>
+
+            <h2>
+                Recommended Actions
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <div id="priorityList"></div>
+
+</section>
+
+</div>
+
+
+<!-- REASONING -->
+
+<div class="dashboard-row">
+
+
+<section class="panel">
+
+    <div class="panel-header">
+
+        <div>
+
+            <span class="panel-label">
+                CROSS-AGENT REASONING
+            </span>
+
+            <h2>
+                What the Platform Sees
+            </h2>
+
+        </div>
+
+        <span class="live">
+            CONTEXT
+        </span>
+
+    </div>
+
+
+    <div id="reasoningFeed">
+
+        <div class="reasoning-item">
+
+            <span class="reasoning-index">
+                01
+            </span>
+
+            <div>
+
+                <strong>
+                    Correlation detected
+                </strong>
+
+                <p>
+                    Energy consumption is elevated during periods
+                    of lower-than-normal occupancy.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="reasoning-item">
+
+            <span class="reasoning-index">
+                02
+            </span>
+
+            <div>
+
+                <strong>
+                    Operational relationship
+                </strong>
+
+                <p>
+                    Increased HVAC runtime appears correlated
+                    with the current energy deviation.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="reasoning-item">
+
+            <span class="reasoning-index">
+                03
+            </span>
+
+            <div>
+
+                <strong>
+                    Maintenance signal
+                </strong>
+
+                <p>
+                    One HVAC asset shows an elevated operational
+                    risk and should be inspected before the next
+                    scheduled maintenance window.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="panel">
+
+    <div class="panel-header">
+
+        <div>
+
+            <span class="panel-label">
+                FACILITY RISK
+            </span>
+
+            <h2>
+                Intelligence Overview
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <div class="chart-box small">
+
+        <canvas id="intelligenceChart"></canvas>
+
+    </div>
+
+</section>
+
+</div>
+
+
+<!-- INTELLIGENCE TEST LAB -->
+
+<section class="panel">
+
+    <div class="panel-header">
+
+        <div>
+
+            <span class="panel-label">
+                AI TEST LAB
+            </span>
+
+            <h2>
+                Ask the Facility Intelligence Engine
+            </h2>
+
+            <p class="test-lab-description">
+                Test a cross-agent operational situation and
+                generate a prioritized response.
+            </p>
+
+        </div>
+
+        <span class="result-status">
+            AI SIMULATION
+        </span>
+
+    </div>
+
+
+    <div class="test-fields">
+
+
+        <div class="test-field">
+
+            <label>
+                PRIMARY SIGNAL
+            </label>
+
+            <select id="primarySignal">
+
+                <option value="energy">
+                    Energy consumption anomaly
+                </option>
+
+                <option value="maintenance">
+                    Asset failure risk
+                </option>
+
+                <option value="occupancy">
+                    Occupancy spike
+                </option>
+
+                <option value="security">
+                    Security incident
+                </option>
+
+                <option value="cost">
+                    Operating cost increase
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="test-field">
+
+            <label>
+                SEVERITY
+            </label>
+
+            <select id="signalSeverity">
+
+                <option value="low">
+                    Low
+                </option>
+
+                <option value="medium" selected>
+                    Medium
+                </option>
+
+                <option value="high">
+                    High
+                </option>
+
+                <option value="critical">
+                    Critical
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="test-field">
+
+            <label>
+                IMPACT DURATION
+            </label>
+
+            <select id="impactDuration">
+
+                <option value="1">
+                    1 hour
+                </option>
+
+                <option value="4">
+                    4 hours
+                </option>
+
+                <option value="12">
+                    12 hours
+                </option>
+
+                <option value="24">
+                    24 hours
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="test-field">
+
+            <label>
+                ADDITIONAL CONTEXT
+            </label>
+
+            <input
+                id="additionalContext"
+                type="text"
+                placeholder="e.g. occupancy is 20% below normal"
+            >
+
+        </div>
+
+    </div>
+
+
+    <button
+        id="runIntelligence"
+        class="test-button"
+    >
+        RUN AI ANALYSIS
+    </button>
+
+
+    <div class="agent-result">
+
+        <span
+            id="analysisStatus"
+            class="result-status"
+        >
+            WAITING
+        </span>
+
+
+        <div
+            id="analysisResult"
+            class="insight"
+        >
+            Provide a facility signal and run the intelligence engine.
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- AI OUTPUT -->
+
+<section class="panel">
+
+    <div class="panel-header">
+
+        <div>
+
+            <span class="panel-label">
+                INTELLIGENCE OUTPUT
+            </span>
+
+            <h2>
+                AI Operational Recommendation
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <div
+        id="aiRecommendation"
+        class="ai-output"
+    >
+
+        <div class="ai-output-header">
+
+            <span>
+                FACILITY AI
+            </span>
+
+            <span class="result-status">
+                READY
+            </span>
+
+        </div>
+
+
+        <div class="ai-output-body">
+
+            Run an analysis to generate a
+            cross-agent operational recommendation.
+
+        </div>
+
+    </div>
+
+</section>
+
+
+</section>
+
+</main>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="module" src="../assets/js/intelligence.js"></script>
+
+</body>
+</html>
