@@ -13,8 +13,7 @@ async function initFacilities() {
 async function analyze() {
 
     const facility = $("facility").value;
-    const duration = $("duration").value;
-    const days = Number.parseInt(duration, 10);
+    const days = Number($("duration").value);
 
     if (!facility) {
         clearResults();
@@ -24,7 +23,8 @@ async function analyze() {
     }
 
     $("status").textContent = "ANALYZING";
-    $("recommendation").textContent = "Occupancy Agent is analyzing facility zones...";
+    $("recommendation").textContent =
+        `Occupancy Agent is analyzing the last ${days} ${days === 1 ? "day" : "days"}...`;
 
     try {
         renderResult(await getOccupancyAnalysis(facility, days));
@@ -42,6 +42,7 @@ function renderResult(result) {
 
     const occupancy = result?.occupancy ?? {};
     const zones = Array.isArray(occupancy.zones) ? occupancy.zones : [];
+    const days = Number(result?.analysis_window_days);
 
     $("assetCount").textContent = zones.length;
 
@@ -65,7 +66,8 @@ function renderResult(result) {
     $("recommendation").textContent =
         occupancy.degraded
             ? occupancy.degradation_reason ?? "Occupancy model is unavailable; showing degraded zone data."
-            : result.recommendation?.text ?? result.recommendation ?? "Occupancy analysis completed.";
+            : `${result.recommendation?.text ?? result.recommendation ?? "Occupancy analysis completed."} ` +
+                (Number.isFinite(days) ? `Window: last ${days} ${days === 1 ? "day" : "days"}.` : "");
 }
 
 function renderZones(zones) {
