@@ -828,6 +828,152 @@ button {
     height: 230px;
 }
 
+.occupancy-insights {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.zone-rank {
+    margin-bottom: 11px;
+}
+
+.zone-rank-top,
+.risk-grid div {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.zone-rank-top,
+.zone-rank-status,
+.risk-grid span {
+    color: #7c8794;
+    font-size: 10px;
+}
+
+.zone-rank-top strong,
+.risk-grid strong {
+    color: #dce4ec;
+    font-size: 11px;
+}
+
+.zone-progress {
+    position: relative;
+    height: 5px;
+    margin: 6px 0 4px;
+    background: #202a34;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.zone-progress i {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+}
+
+.zone-progress b {
+    position: absolute;
+    top: -3px;
+    width: 1px;
+    height: 11px;
+    background: #718091;
+    opacity: .65;
+}
+
+.zone-progress i.low { background: #5b9bb4; }
+.zone-progress i.normal { background: #65c99b; }
+.zone-progress i.high { background: #d3a45f; }
+.zone-progress i.critical { background: #bd5a5a; }
+
+.risk-grid {
+    display: grid;
+    gap: 13px;
+}
+
+.risk-grid div {
+    align-items: baseline;
+    border-bottom: 1px solid #202a34;
+    padding-bottom: 8px;
+}
+
+.risk-grid div:last-child { border-bottom: 0; }
+
+.capacity-gauge {
+    padding: 2px 0 14px;
+}
+
+.gauge-value {
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+}
+
+.gauge-value strong {
+    color: #65c99b;
+    font-size: 25px;
+}
+
+.gauge-value span,
+.gauge-scale {
+    color: #687789;
+    font-size: 9px;
+}
+
+.gauge-track {
+    height: 9px;
+    margin: 10px 0 5px;
+    background: #202a34;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.gauge-track i {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, #5b9bb4, #65c99b 65%, #d3a45f);
+    border-radius: inherit;
+}
+
+.gauge-scale {
+    display: flex;
+    justify-content: space-between;
+}
+
+.risk-distribution {
+    display: grid;
+    gap: 6px;
+    margin-top: 5px;
+}
+
+.risk-band {
+    display: grid;
+    grid-template-columns: 48px 1fr 15px;
+    align-items: center;
+    gap: 7px;
+    color: #7c8794;
+    font-size: 9px;
+    text-transform: uppercase;
+}
+
+.risk-band i {
+    height: 5px;
+    min-width: 2px;
+    background: #65c99b;
+    border-radius: 3px;
+}
+
+.risk-band i.low { background: #5b9bb4; }
+.risk-band i.high { background: #d3a45f; }
+.risk-band i.critical { background: #bd5a5a; }
+.risk-band b { color: #dce4ec; text-align: right; }
+
+.occupancy-trend-chart {
+    height: 155px;
+}
+
 .test-lab {
     background: #0d1319;
     border: 1px solid #34404c;
@@ -1031,6 +1177,10 @@ button {
 @media(max-width:1100px) {
     .agent-grid {
         grid-template-columns: repeat(3, 1fr);
+    }
+
+    .occupancy-insights {
+        grid-template-columns: 1fr;
     }
 
     .dashboard-row,

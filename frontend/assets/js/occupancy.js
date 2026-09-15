@@ -66,6 +66,45 @@ function renderResult(result) {
             ? occupancy.degradation_reason ?? "Occupancy model is unavailable; showing degraded zone data."
             : `${result.recommendation?.text ?? result.recommendation ?? "Occupancy analysis completed."} ` +
                 (Number.isFinite(days) ? `Window: last ${days} ${days === 1 ? "day" : "days"}.` : "");
+    renderOccupancyDashboard(zones, values, average, occupancy);
+}
+
+function renderOccupancyDashboard(zones, values, average, occupancy) {
+    const ranked = zones
+        .map(zone => ({ zone, utilization: Number(zone.utilization_pct) }))
+        .filter(item => Number.isFinite(item.utilization))
+        .sort((a, b) => b.utilization - a.utilization);
+
+    $("zoneRanking").innerHTML = ranked.length
+        ? ranked.map(({ zone, utilization }) => {
+            const label = zone.zone_type ?? zone.zone_id ?? "Zone";
+            return `<div class="zone-rank"><div class="zone-rank-top"><strong>${escapeHtml(label)}</strong><span>${utilization.toFixed(1)}%</span></div><div class="zone-progress"><i class="${getIntensity(utilization)}" style="width:${Math.min(utilization, 100)}%"></i><b style="left:75%"></b><b style="left:100%"></b></div><span class="zone-rank-status">${getIntensity(utilization).toUpperCase()} UTILIZATION</span></div>`;
+        }).join("")
+        : `<div class="insight">No utilization data returned.</div>`;
+
+    const counts = zones.map(zone => Number(zone.latest_count)).filter(Number.isFinite);
+    const capacities = zones.map(zone => Number(zone.max_capacity)).filter(Number.isFinite);
+    const totalCount = counts.reduce((a, b) => a + b, 0);
+    const totalCapacity = capacities.reduce((a, b) => a + b, 0);
+    const capacityPct = totalCapacity ? Math.min(totalCount / totalCapacity * 100, 100) : null;
+    const highest = ranked[0];
+    const riskBands = ["low", "normal", "high", "critical"].map(band => ({
+        band,
+        count: zones.filter(zone => getIntensity(Number(zone.utilization_pct)) === band).length
+    }));
+    $("capacityRisk").innerHTML = `<div class="capacity-gauge"><div class="gauge-value"><strong>${capacityPct == null ? "--" : `${capacityPct.toFixed(1)}%`}</strong><span>of total capacity</span></div><div class="gauge-track"><i style="width:${capacityPct ?? 0}%"></i></div><div class="gauge-scale"><span>${counts.length ? totalCount.toFixed(1) : "--"} occupied</span><span>${capacities.length ? totalCapacity.toFixed(1) : "--"} capacity</span></div></div><div class="risk-grid"><div><span>Average utilization</span><strong>${average == null ? "--" : `${average.toFixed(1)}%`}</strong></div><div><span>Highest-utilized zone</span><strong>${highest ? escapeHtml(highest.zone.zone_type ?? highest.zone.zone_id ?? "Zone") : "--"}</strong></div></div><div class="risk-distribution">${riskBands.map(({ band, count }) => `<div class="risk-band"><span>${band}</span><i class="${band}" style="width:${zones.length ? count / zones.length * 100 : 0}%"></i><b>${count}</b></div>`).join("")}</div>`;
+    renderTrend(occupancy);
+}
+
+function renderTrend(occupancy) {
+    const panel = $("occupancyTrendPanel");
+    const series = occupancy.history ?? occupancy.time_series ?? occupancy.trend;
+    if (!panel || !globalThis.Chart || !Array.isArray(series) || !series.length) {
+        if (panel) panel.hidden = true;
+        return;
+    }
+    panel.hidden = false;
+    new globalThis.Chart($("occupancyTrendChart"), { type: "line", data: { labels: series.map(point => point.label ?? point.date ?? point.timestamp), datasets: [{ data: series.map(point => point.utilization_pct ?? point.occupancy), borderColor: "#65c99b", tension: .3 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
 }
 
 function renderZones(zones) {
@@ -168,6 +207,9 @@ function clearResults() {
     $("highRisk").textContent = "--";
     $("predictedFailures").textContent = "--";
     $("assetList").innerHTML = `<div class="insight">No occupancy data available.</div>`;
+    $("zoneRanking").innerHTML = `<div class="insight">No occupancy data available.</div>`;
+    $("capacityRisk").innerHTML = `<div class="insight">No occupancy data available.</div>`;
+    $("occupancyTrendPanel").hidden = true;
 
     $("occupancyHeatmap").innerHTML = `<div class="heatmap-empty">No occupancy data available.</div>`;
 }

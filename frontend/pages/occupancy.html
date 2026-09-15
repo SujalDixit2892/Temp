@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Occupancy Agent | FacilityOps</title>
-<link rel="stylesheet" href="../assets/css/styles.css">
+<link rel="stylesheet" href="../assets/css/styles.css?v=occupancy-dashboard-2">
 </head>
 <body>
 <div class="app">
@@ -119,6 +119,21 @@
         <span class="metric-sub">Agent state</span>
     </div>
 
+</div>
+
+<div class="occupancy-insights" id="occupancyInsights">
+<section class="panel">
+    <div class="panel-header"><div><span class="panel-label">UTILIZATION RANKING</span><h2>Zone Utilization</h2></div></div>
+    <div id="zoneRanking" class="zone-ranking"></div>
+</section>
+<section class="panel occupancy-trend-panel" id="occupancyTrendPanel" hidden>
+    <div class="panel-header"><div><span class="panel-label">HISTORICAL SIGNAL</span><h2>Occupancy Trend</h2></div></div>
+    <div class="occupancy-trend-chart"><canvas id="occupancyTrendChart"></canvas></div>
+</section>
+<section class="panel">
+    <div class="panel-header"><div><span class="panel-label">CAPACITY MONITORING</span><h2>Capacity &amp; Risk</h2></div></div>
+    <div id="capacityRisk" class="capacity-risk"></div>
+</section>
 </div>
 
 <div class="dashboard-row">
