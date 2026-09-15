@@ -21,14 +21,36 @@ function renderAnomalies(anomalies) {
 
     container.innerHTML = anomalies.map(item => `
         <div class="anomaly">
-            <strong>${item.date}</strong>
+            <strong>ANOMALY<br>${item.date}</strong>
             <span>
-                Actual ${item.actual_kwh} kWh
-                · Model ${item.predicted_kwh} kWh
-                · Excess ${item.excess_pct}%
+                Actual ${formatKwh(item.actual_kwh)}
+                · Expected ${formatKwh(item.predicted_kwh)}
+                <br>Energy telemetry · affected area unavailable
             </span>
+            <span class="anomaly-meta">Deviation<br>${item.excess_pct == null ? "--" : `${item.excess_pct}%`}</span>
         </div>
     `).join("");
+}
+
+function formatKwh(value) {
+    const number = toNumber(value);
+    return number == null ? "--" : `${number.toLocaleString()} kWh`;
+}
+
+function renderKpis(points, anomalies) {
+    const actual = points.map(point => point.actual).filter(value => value != null);
+    const expected = points.map(point => point.expected).filter(value => value != null);
+    const average = values => values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : null;
+    const latest = points.at(-1)?.actual;
+    const actualAverage = average(actual);
+    const expectedAverage = average(expected);
+    const alignment = actualAverage && expectedAverage ? (expectedAverage / actualAverage) * 100 : null;
+
+    setText("latestConsumption", formatKwh(latest));
+    setText("averageConsumption", formatKwh(actualAverage));
+    setText("expectedConsumption", formatKwh(expectedAverage));
+    setText("efficiency", alignment == null ? "--" : `${alignment.toFixed(1)}%`);
+    setText("anomalyCount", anomalies.length);
 }
 
 function renderChart(analysis, anomalies) {
@@ -42,6 +64,9 @@ function renderChart(analysis, anomalies) {
     if (energyChart) energyChart.destroy();
 
     const points = getEnergyPoints(analysis, anomalies);
+    const forecastDate = analysis?.forecast_next_day;
+    const forecastValue = toNumber(analysis?.forecast_next_day_kwh);
+    const hasForecast = forecastDate != null && forecastValue != null;
     const labels = points.map(point => point.date);
     const actual = points.map(point => point.actual);
     const expected = points.map(point => point.expected);
@@ -78,6 +103,20 @@ function renderChart(analysis, anomalies) {
             tension: 0.3,
             spanGaps: true
         });
+    }
+    if (hasForecast) {
+        datasets.push({
+            label: "Next-day forecast",
+            data: Array(labels.length).fill(null).concat([forecastValue]),
+            borderColor: "#d6a15d",
+            borderDash: [3, 3],
+            pointRadius: 4,
+            tension: 0.3,
+            spanGaps: true
+        });
+        labels.push(forecastDate);
+        actual.push(null);
+        expected.push(null);
     }
 
     const anomalyValues = points.map(point => point.isAnomaly ? point.actual : null);
@@ -152,7 +191,7 @@ function createChartMessage(message) {
 }
 
 function clearEnergyResults() {
-    ["forecast", "anomalyCount", "wastageDays", "modelMae", "forecastDetail", "sourceDetail", "reasonerSource"]
+    ["latestConsumption", "averageConsumption", "expectedConsumption", "efficiency", "forecast", "anomalyCount", "wastageDays", "modelMae", "forecastValue", "forecastDate", "forecastDetail", "sourceDetail", "reasonerSource"]
         .forEach(id => setText(id, "--"));
 
     if (energyChart) {
@@ -173,7 +212,7 @@ function clearEnergyResults() {
 function renderEnergy(result) {
     const analysis = result?.analysis;
 
-    if (result?.degraded || !analysis) {
+    if (!analysis) {
         clearEnergyResults();
         setText("status", "DEGRADED");
         setText(
@@ -186,8 +225,9 @@ function renderEnergy(result) {
 
     const recommendation = result.recommendation;
     const anomalies = Array.isArray(analysis.anomalies) ? analysis.anomalies : [];
+    const points = getEnergyPoints(analysis, anomalies);
 
-    setText("status", analysis.status === "success" ? "ANALYSIS COMPLETE" : "DEGRADED");
+    setText("status", analysis.status === "success" ? "ANALYSIS COMPLETE" : "PARTIAL DATA");
 
     setText(
         "forecast",
@@ -200,6 +240,8 @@ function renderEnergy(result) {
         "anomalyCount",
         anomalies.length
     );
+
+    renderKpis(points, anomalies);
 
     setText(
         "wastageDays",
@@ -215,8 +257,11 @@ function renderEnergy(result) {
         "forecastDetail",
         analysis.forecast_next_day_kwh != null
             ? `${analysis.forecast_next_day_kwh} kWh · ${analysis.forecast_next_day}`
-            : "--"
+            : "Forecast unavailable for this analysis window"
     );
+
+    setText("forecastValue", formatKwh(analysis.forecast_next_day_kwh));
+    setText("forecastDate", analysis.forecast_next_day ?? "No forecast returned.");
 
     setText("sourceDetail", recommendation?.source ?? result.provenance?.source ?? "--");
     setText("reasonerSource", recommendation?.source ?? "WAITING");

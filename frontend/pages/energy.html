@@ -81,6 +81,18 @@
             margin-bottom:16px;
         }
 
+        .energy-kpis { grid-template-columns:repeat(5,1fr); }
+        .secondary-kpis { grid-template-columns:repeat(3,1fr); }
+        .energy-kpis .agent-card { min-height:92px; }
+        .metric-note { color:#718096; font-size:10px; margin-top:6px; }
+        .energy-split { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(240px,.7fr); gap:12px; }
+        .forecast-panel { display:flex; flex-direction:column; justify-content:space-between; }
+        .forecast-value { font-size:30px; font-weight:700; color:#d6a15d; margin:12px 0 6px; }
+        .forecast-date { color:#8793a1; font-size:11px; }
+        .anomaly { display:grid; grid-template-columns:90px 1fr auto; gap:12px; align-items:center; }
+        .anomaly strong { color:#e17b68; }
+        .anomaly-meta { color:#718096; font-size:10px; text-align:right; }
+
         .agent-card {
             background:#111820;
             border:1px solid #27313c;
@@ -193,16 +205,45 @@
 
 <div>
 
-<div class="agent-grid">
+<div class="agent-grid energy-kpis">
 
     <div class="agent-card">
-        <span>FORECAST</span>
-        <strong id="forecast">--</strong>
+        <span>LATEST CONSUMPTION</span>
+        <strong id="latestConsumption">--</strong>
+        <div class="metric-note">kWh · latest telemetry</div>
+    </div>
+
+    <div class="agent-card">
+        <span>AVERAGE CONSUMPTION</span>
+        <strong id="averageConsumption">--</strong>
+        <div class="metric-note">kWh · selected window</div>
+    </div>
+
+    <div class="agent-card">
+        <span>EXPECTED / BASELINE</span>
+        <strong id="expectedConsumption">--</strong>
+        <div class="metric-note">kWh · model predictions</div>
+    </div>
+
+    <div class="agent-card">
+        <span>MODEL ALIGNMENT</span>
+        <strong id="efficiency">--</strong>
+        <div class="metric-note">baseline ÷ actual</div>
     </div>
 
     <div class="agent-card">
         <span>ANOMALIES</span>
         <strong id="anomalyCount">--</strong>
+        <div class="metric-note">real wastage events</div>
+    </div>
+
+</div>
+
+<div class="agent-grid secondary-kpis">
+
+    <div class="agent-card">
+        <span>FORECAST</span>
+        <strong id="forecast">--</strong>
     </div>
 
     <div class="agent-card">
@@ -217,6 +258,7 @@
 
 </div>
 
+<div class="energy-split">
 <section class="panel">
     <div class="panel-header">
         <div>
@@ -230,6 +272,22 @@
         <canvas id="energyChart"></canvas>
     </div>
 </section>
+
+<section class="panel forecast-panel">
+    <div>
+        <div class="panel-header">
+            <div>
+                <span class="panel-label">FORECAST OUTPUT</span>
+                <h2>Next-day demand</h2>
+            </div>
+            <span class="live">MODEL</span>
+        </div>
+        <div id="forecastValue" class="forecast-value">--</div>
+        <div id="forecastDate" class="forecast-date">No forecast returned.</div>
+    </div>
+    <div class="metric-note">Forecast is shown only when returned by the Energy API.</div>
+</section>
+</div>
 
 <section class="panel">
     <div class="panel-header">
@@ -266,7 +324,7 @@
 
     <div class="panel-header">
         <div>
-            <span class="panel-label">AGENT TEST LAB</span>
+            <span class="panel-label">TEST / SIMULATION LAB</span>
             <h2>Run Analysis</h2>
         </div>
     </div>
@@ -292,7 +350,7 @@
     </button>
 
     <div class="result-box">
-        <div class="result-label">STATUS</div>
+        <div class="result-label">TEST RESULT STATUS</div>
         <div id="status" class="result-value">READY</div>
     </div>
 

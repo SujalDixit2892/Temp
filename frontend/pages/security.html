@@ -143,7 +143,7 @@
             id="securityScore"
             class="metric-value"
         >
-            87
+            --
         </strong>
 
         <span class="metric-sub">
@@ -163,7 +163,7 @@
             id="activeIncidents"
             class="metric-value"
         >
-            4
+            --
         </strong>
 
         <span class="metric-sub">
@@ -183,7 +183,7 @@
             id="highRisk"
             class="metric-value"
         >
-            2
+            --
         </strong>
 
         <span class="metric-sub">
@@ -203,7 +203,7 @@
             id="anomalyRate"
             class="metric-value"
         >
-            3.8%
+            --
         </strong>
 
         <span class="metric-sub">
@@ -223,7 +223,7 @@
             id="status"
             class="metric-value"
         >
-            ACTIVE
+            LOADING
         </strong>
 
         <span class="metric-sub">
@@ -233,6 +233,23 @@
     </div>
 
 </div>
+
+<section class="panel security-overview">
+    <div class="panel-header">
+        <div>
+            <span class="panel-label">SECURITY OVERVIEW</span>
+            <h2>Current Risk Summary</h2>
+        </div>
+        <span class="result-status">PRODUCTION DATA</span>
+    </div>
+    <div class="test-fields">
+        <div class="test-field"><label>THREAT / RISK LEVEL</label><strong id="overviewThreat">--</strong></div>
+        <div class="test-field"><label>TOTAL EVENTS</label><strong id="overviewEvents">--</strong></div>
+        <div class="test-field"><label>ANOMALIES</label><strong id="overviewAnomalies">--</strong></div>
+        <div class="test-field"><label>HIGH / CRITICAL FINDINGS</label><strong id="overviewHighRisk">--</strong></div>
+        <div class="test-field"><label>AFFECTED ZONE</label><strong id="overviewZone">Not provided</strong></div>
+    </div>
+</section>
 
 
 <!-- INCIDENT + RISK -->
@@ -279,7 +296,7 @@
         <div>
 
             <span class="panel-label">
-                RISK DISTRIBUTION
+                SECURITY RISK DISTRIBUTION
             </span>
 
             <h2>
@@ -300,6 +317,17 @@
 </section>
 
 </div>
+
+<section id="securityTimelinePanel" class="panel" hidden>
+    <div class="panel-header">
+        <div>
+            <span class="panel-label">SECURITY ANALYSIS TIMELINE</span>
+            <h2>Recorded Event Activity</h2>
+        </div>
+        <span class="result-status">PRODUCTION DATA</span>
+    </div>
+    <div id="securityTimeline" class="insight"></div>
+</section>
 
 
 <!-- HEATMAP + INCIDENT QUEUE -->
@@ -386,16 +414,15 @@
         <div>
 
             <span class="panel-label">
-                SECURITY TEST LAB
+                SECURITY TEST / WHAT-IF MODE
             </span>
 
             <h2>
-                Simulate a Security Event
+                Test a Security Scenario
             </h2>
 
             <p class="test-lab-description">
-                Inject a hypothetical security event and evaluate
-                its severity, risk and recommended response.
+                Frontend-only evaluation. Results are simulations and never create production incidents.
             </p>
 
         </div>
@@ -444,6 +471,11 @@
 
             </select>
 
+        </div>
+
+        <div class="test-field">
+            <label>FAILED ATTEMPTS</label>
+            <input id="failedAttempts" type="number" value="0" min="0" max="100">
         </div>
 
 
@@ -519,9 +551,11 @@
         id="runSecurityTest"
         class="test-button"
     >
-        ANALYZE SECURITY EVENT
+        RUN SCENARIO
     </button>
 
+
+    <button id="resetSecurityTest" class="panel-action" type="button">RESET SCENARIO</button>
 
     <div class="agent-result">
 
@@ -537,7 +571,7 @@
             id="testResult"
             class="insight"
         >
-            Configure an event and run the Security Agent.
+            Ready for what-if analysis. Configure a scenario to preview risk drivers and response actions. No production data will be changed.
         </div>
 
     </div>
@@ -588,7 +622,7 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script type="module" src="../assets/js/security.js"></script>
+<script type="module" src="../assets/js/security.js?v=2"></script>
 
 </body>
 </html>

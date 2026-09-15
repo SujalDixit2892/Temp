@@ -5,6 +5,36 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AI Intelligence | FacilityOps</title>
 <link rel="stylesheet" href="../assets/css/styles.css">
+<style>
+    .command-kicker { color:#6ed5b0; font-size:10px; letter-spacing:1.4px; font-weight:700; }
+    .signal-flow { display:flex; align-items:stretch; gap:10px; overflow:auto; padding:8px 0; }
+    .signal-node { min-width:135px; padding:14px; background:#151c24; border:1px solid #293442; border-radius:6px; display:flex; flex-direction:column; gap:7px; }
+    .signal-node strong { font-size:12px; }
+    .signal-node span { color:#8e99a8; font-size:11px; line-height:1.4; }
+    .signal-node { position:relative; box-shadow:inset 0 2px 0 #5bd19a; }
+    .signal-node:last-of-type { min-width:220px; }
+    .signal-node:last-of-type span { display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+    .signal-arrow { align-self:center; color:#5bd19a; font-size:18px; }
+    .priority-line { display:flex; justify-content:space-between; gap:15px; }
+    .health-summary { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:#293442; }
+    .health-cell { min-height:92px; padding:14px; background:#151c24; display:flex; flex-direction:column; gap:7px; }
+    .health-cell span { color:#7e8b9b; font-size:10px; text-transform:uppercase; letter-spacing:1px; }
+    .health-cell strong { font-size:16px; }
+    .health-cell small { color:#5bd19a; font-size:10px; }
+    .health-cell strong { min-height:32px; line-height:1.35; }
+    .agent-meter, .summary-meter { display:block; height:4px; background:#25313c; border-radius:4px; overflow:hidden; }
+    .agent-meter { margin-top:8px; }
+    .agent-meter b, .summary-meter i { display:block; height:100%; background:#5bd19a; border-radius:inherit; }
+    .agent-row { align-items:flex-start; }
+    .agent-state.degraded, .agent-state.unavailable { color:#d6a15d; }
+    .summary-meter { margin:2px 0 2px; }
+    .timeline-item { display:grid; grid-template-columns:145px 1fr auto; gap:12px; padding:12px 0; border-bottom:1px solid #202833; font-size:12px; }
+    .timeline-item time, .timeline-item span { color:#8e99a8; }
+    .recommendation-meta { margin-top:18px; color:#8e99a8; font-size:11px; }
+    .ai-output-body { white-space:pre-line; line-height:1.65; max-height:230px; overflow:auto; }
+    #legacyTestLab { display:none; }
+    @media (max-width:700px) { .health-summary { grid-template-columns:repeat(2,1fr); } .timeline-item { grid-template-columns:1fr; gap:4px; } }
+</style>
 </head>
 
 <body>
@@ -140,16 +170,12 @@
                 1 Day
             </option>
 
-            <option value="7" selected>
-                7 Days
+            <option value="90" selected>
+                90 Days
             </option>
 
             <option value="30">
                 30 Days
-            </option>
-
-            <option value="90">
-                90 Days
             </option>
 
         </select>
@@ -173,7 +199,7 @@
             id="healthScore"
             class="metric-value"
         >
-            86
+            --
         </strong>
 
         <span class="metric-sub">
@@ -193,7 +219,7 @@
             id="activeAgents"
             class="metric-value"
         >
-            5
+            --
         </strong>
 
         <span class="metric-sub">
@@ -213,7 +239,7 @@
             id="findingCount"
             class="metric-value"
         >
-            12
+            --
         </strong>
 
         <span class="metric-sub">
@@ -233,7 +259,7 @@
             id="priorityCount"
             class="metric-value"
         >
-            3
+            --
         </strong>
 
         <span class="metric-sub">
@@ -253,7 +279,7 @@
             id="aiStatus"
             class="metric-value"
         >
-            READY
+            WAITING
         </strong>
 
         <span class="metric-sub">
@@ -293,7 +319,7 @@
     </div>
 
 
-    <div class="orchestrator">
+    <div class="orchestrator" id="signalFlow">
 
         <div class="orchestrator-node active">
 
@@ -450,6 +476,14 @@
 
 </div>
 
+<section class="panel">
+    <div class="panel-header">
+        <div><span class="panel-label">FACILITY HEALTH SUMMARY</span><h2>Operational Domain Health</h2></div>
+        <span class="command-kicker">LIVE / ANALYSIS</span>
+    </div>
+    <div id="healthSummary" class="health-summary"></div>
+</section>
+
 
 <!-- REASONING -->
 
@@ -466,9 +500,7 @@
                 CROSS-AGENT REASONING
             </span>
 
-            <h2>
-                What the Platform Sees
-            </h2>
+            <h2>Decision Timeline</h2>
 
         </div>
 
@@ -479,112 +511,19 @@
     </div>
 
 
-    <div id="reasoningFeed">
-
-        <div class="reasoning-item">
-
-            <span class="reasoning-index">
-                01
-            </span>
-
-            <div>
-
-                <strong>
-                    Correlation detected
-                </strong>
-
-                <p>
-                    Energy consumption is elevated during periods
-                    of lower-than-normal occupancy.
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div class="reasoning-item">
-
-            <span class="reasoning-index">
-                02
-            </span>
-
-            <div>
-
-                <strong>
-                    Operational relationship
-                </strong>
-
-                <p>
-                    Increased HVAC runtime appears correlated
-                    with the current energy deviation.
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div class="reasoning-item">
-
-            <span class="reasoning-index">
-                03
-            </span>
-
-            <div>
-
-                <strong>
-                    Maintenance signal
-                </strong>
-
-                <p>
-                    One HVAC asset shows an elevated operational
-                    risk and should be inspected before the next
-                    scheduled maintenance window.
-                </p>
-
-            </div>
-
-        </div>
-
+    <div id="decisionTimeline">
+        <div class="insight">Loading agent events...</div>
     </div>
 
 </section>
 
-
-<section class="panel">
-
-    <div class="panel-header">
-
-        <div>
-
-            <span class="panel-label">
-                FACILITY RISK
-            </span>
-
-            <h2>
-                Intelligence Overview
-            </h2>
-
-        </div>
-
-    </div>
-
-
-    <div class="chart-box small">
-
-        <canvas id="intelligenceChart"></canvas>
-
-    </div>
-
-</section>
 
 </div>
 
 
 <!-- INTELLIGENCE TEST LAB -->
 
-<section class="panel">
+<section class="panel" id="legacyTestLab">
 
     <div class="panel-header">
 
@@ -812,7 +751,7 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script type="module" src="../assets/js/intelligence.js"></script>
+<script type="module" src="../assets/js/intelligence.js?v=2"></script>
 
 </body>
 </html>

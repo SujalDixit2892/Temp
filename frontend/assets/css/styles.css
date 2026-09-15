@@ -1114,6 +1114,33 @@ button {
     line-height: 1.55;
 }
 
+.simulation-result-head, .simulation-summary, .simulation-grid {
+    display: flex;
+    gap: 14px;
+}
+.simulation-result-head { align-items: center; justify-content: space-between; }
+.simulation-result-head > div:first-child strong, .simulation-response > div:first-child strong { display: block; margin-top: 4px; color: #e8edf3; }
+.simulation-kicker { color: #687789; font-size: 9px; font-weight: 700; letter-spacing: .08em; }
+.simulation-score { color: #687789; text-align: right; }
+.simulation-score strong { color: #e8edf3; font-size: 30px; line-height: 1; }
+.simulation-summary { flex-wrap: wrap; margin: 14px 0; color: #aeb9c6; font-size: 10px; }
+.simulation-summary span { padding: 5px 8px; background: #151e27; border: 1px solid #293440; border-radius: 4px; }
+.simulation-risk { font-weight: 700; }
+.risk-low { color: #76c4b0 !important; } .risk-medium { color: #d3a45f !important; } .risk-high, .risk-critical { color: #db7777 !important; }
+.simulation-grid { display: grid; grid-template-columns: 1.25fr 1fr; }
+.factor-row { display: grid; grid-template-columns: 1fr 28px; gap: 8px; margin-top: 9px; color: #aeb9c6; font-size: 10px; }
+.factor-row b { color: #e8edf3; text-align: right; }
+.factor-row i { grid-column: 1 / -1; display: block; height: 5px; background: #202b36; border-radius: 3px; overflow: hidden; }
+.factor-row em { display: block; height: 100%; background: #c68d5d; border-radius: inherit; }
+.simulation-compare { border-left: 1px solid #293440; padding-left: 14px; }
+.simulation-compare > div { display: flex; justify-content: space-between; gap: 8px; padding: 10px 0; border-bottom: 1px solid #202a34; color: #788695; font-size: 9px; }
+.simulation-compare b { color: #bac5d0; text-align: right; }
+.simulation-compare .compare-simulated { border-bottom: 0; } .compare-simulated b { color: #d3a45f; }
+.simulation-response { margin-top: 14px; padding: 13px; background: #121b23; border: 1px solid #34404c; border-radius: 5px; }
+.response-step { display: flex; align-items: center; gap: 9px; padding: 9px 0; border-bottom: 1px solid #25313c; color: #d2dae3; font-size: 11px; }
+.response-step b { display: grid; place-items: center; width: 21px; height: 21px; background: #293846; border-radius: 50%; color: #e8edf3; font-size: 10px; }
+.simulation-response small { display: block; margin-top: 10px; color: #687789; line-height: 1.4; }
+
 .table-wrap {
     overflow-x: auto;
 }
@@ -1259,5 +1286,15 @@ button {
 
     .test-fields {
         grid-template-columns: 1fr;
+    }
+
+    .simulation-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .simulation-compare {
+        border-left: 0;
+        border-top: 1px solid #293440;
+        padding: 14px 0 0;
     }
 }

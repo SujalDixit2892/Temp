@@ -4,6 +4,7 @@ import { getOccupancyAnalysis } from "./api.js";
 let incidentChart = null;
 let riskChart = null;
 let requestSequence = 0;
+let productionSecurity = null;
 
 const $ = id => document.getElementById(id);
 
@@ -27,6 +28,7 @@ async function refreshDashboard() {
         const result = await getOccupancyAnalysis(facilityId, days);
         if (requestId !== requestSequence) return;
         const security = result?.security ?? {};
+        productionSecurity = security;
         const activeThreats = Array.isArray(security.active_threats)
             ? security.active_threats
             : [];
@@ -35,6 +37,12 @@ async function refreshDashboard() {
             : [];
         const totalEvents = Number(security.total_events) || 0;
         const flaggedEvents = activeThreats.length + anomalies.length;
+
+        $("overviewThreat").textContent = security.threat_level ?? "--";
+        $("overviewEvents").textContent = totalEvents;
+        $("overviewAnomalies").textContent = anomalies.length;
+        $("overviewHighRisk").textContent = activeThreats.length;
+        $("overviewZone").textContent = security.affected_zone ?? security.zone ?? "Not provided";
 
         $("securityScore").textContent = security.threat_level ?? "--";
         $("activeIncidents").textContent = activeThreats.length;
@@ -49,6 +57,7 @@ async function refreshDashboard() {
         renderCharts(totalEvents, activeThreats.length, anomalies.length);
         renderHeatmap(activeThreats.length, anomalies.length);
         renderIncidentList(activeThreats, anomalies);
+        renderTimeline(security);
     } catch (error) {
         if (requestId !== requestSequence) return;
         console.error(error);
@@ -62,6 +71,12 @@ function clearDashboard() {
     $("activeIncidents").textContent = "--";
     $("highRisk").textContent = "--";
     $("anomalyRate").textContent = "--";
+    $("overviewThreat").textContent = "--";
+    $("overviewEvents").textContent = "--";
+    $("overviewAnomalies").textContent = "--";
+    $("overviewHighRisk").textContent = "--";
+    $("overviewZone").textContent = "Not provided";
+    $("securityTimelinePanel").hidden = true;
     $("incidentList").innerHTML = `<div class="insight">Loading security events...</div>`;
     $("securityHeatmap").replaceChildren();
 
@@ -315,6 +330,25 @@ function renderIncidentList(activeThreats, anomalies) {
 
 }
 
+function renderTimeline(security) {
+    const events = Array.isArray(security.events)
+        ? security.events
+        : Array.isArray(security.event_timeline)
+            ? security.event_timeline
+            : [];
+    const timestamped = events.filter(event => event?.event_time || event?.timestamp);
+    const panel = $("securityTimelinePanel");
+    if (!timestamped.length) {
+        panel.hidden = true;
+        return;
+    }
+    $("securityTimeline").innerHTML = timestamped
+        .sort((a, b) => String(a.event_time ?? a.timestamp).localeCompare(String(b.event_time ?? b.timestamp)))
+        .map(event => `<div class="agent-row"><div class="agent-info"><strong>${event.event_type ?? "Security event"}</strong><span>${event.event_time ?? event.timestamp}</span></div><span class="agent-state">${event.severity ?? "RECORDED"}</span></div>`)
+        .join("");
+    panel.hidden = false;
+}
+
 
 /* =========================================================
    SECURITY SIMULATOR
@@ -335,6 +369,8 @@ function analyzeSecurityEvent() {
         Number(
             $("frequency").value
         );
+
+    const failedAttempts = Math.max(0, Number($("failedAttempts").value) || 0);
 
 
     const severityScore = {
@@ -359,6 +395,8 @@ function analyzeSecurityEvent() {
             20,
             frequency * 2
         );
+
+    risk += Math.min(20, failedAttempts * 3);
 
 
     if (
@@ -418,40 +456,31 @@ function analyzeSecurityEvent() {
         "ANALYSIS COMPLETE";
 
 
+    const zoneFactor = zone === "Restricted Area" ? 10 : zone === "Server Room" ? 8 : 0;
+    const factors = [
+        ["Scenario severity", severityScore, severityScore],
+        ["Failed attempts", failedAttempts * 3, 20],
+        ["Event frequency", Math.min(20, frequency * 2), 20],
+        ["Zone sensitivity", zoneFactor, 10]
+    ];
+    const liveLevel = productionSecurity?.threat_level ?? "Unavailable";
+    const liveEvents = Number(productionSecurity?.total_events);
+    const responseSteps = priority === "CRITICAL"
+        ? ["Escalate to security lead", `Restrict ${zone} access`, "Preserve access and camera records"]
+        : priority === "HIGH"
+            ? ["Dispatch security personnel", `Verify activity in ${zone}`, "Increase zone monitoring"]
+            : ["Validate access logs", `Review activity in ${zone}`, "Continue enhanced monitoring"];
+
     $("testResult").innerHTML = `
-
-        <strong>
-            ${type.replaceAll(
-                "_",
-                " "
-            ).toUpperCase()}
-        </strong>
-
-        <br><br>
-
-        Zone:
-        ${zone}
-
-        <br>
-
-        Frequency:
-        ${frequency}
-        event(s)
-
-        <br>
-
-        Calculated risk:
-        <strong>
-            ${risk}/100
-        </strong>
-
-        <br>
-
-        Priority:
-        <strong>
-            ${priority}
-        </strong>
-
+        <div class="simulation-result-head">
+            <div><span class="simulation-kicker">SIMULATION / WHAT-IF RESULT</span><strong>${type.replaceAll("_", " ").toUpperCase()}</strong></div>
+            <div class="simulation-score"><strong>${risk}</strong><span>/ 100</span></div>
+        </div>
+        <div class="simulation-summary"><span class="simulation-risk risk-${priority.toLowerCase()}">SIMULATED ${priority}</span><span>${zone}</span><span>${frequency} events</span><span>${failedAttempts} failed attempts</span></div>
+        <div class="simulation-grid">
+            <div><span class="simulation-kicker">CONTRIBUTING FACTORS</span>${factors.map(([label, value, max]) => `<div class="factor-row"><span>${label}</span><b>${value}</b><i><em style="width:${Math.min(100, value / max * 100)}%"></em></i></div>`).join("")}</div>
+            <div class="simulation-compare"><span class="simulation-kicker">LIVE VS SIMULATED</span><div><span>LIVE FACILITY</span><b>${liveLevel} · ${Number.isFinite(liveEvents) ? liveEvents : "--"} events</b></div><div class="compare-simulated"><span>WHAT-IF ONLY</span><b>${priority} · ${risk}/100</b></div></div>
+        </div>
     `;
 
 
@@ -483,38 +512,21 @@ function analyzeSecurityEvent() {
 
     $("recommendation").innerHTML = `
 
-        <div class="insight">
-
-            <strong>
-                ${priority} PRIORITY
-            </strong>
-
-            <br><br>
-
-            ${response}
-
-        </div>
-
-        <div class="insight">
-
-            <strong>
-                Agent assessment
-            </strong>
-
-            <br><br>
-
-            The event produced a calculated
-            security risk score of
-            <strong>${risk}/100</strong>.
-            Correlation with access,
-            occupancy and camera events
-            should be performed before
-            final incident closure.
-
-        </div>
+        <div class="simulation-response"><div><span class="simulation-kicker">SIMULATED RESPONSE PLAN</span><strong>${priority} PRIORITY</strong></div>${responseSteps.map((step, index) => `<div class="response-step"><b>${index + 1}</b><span>${step}</span></div>`).join("")}<small>${response} This is a what-if recommendation only.</small></div>
 
     `;
 
+}
+
+function resetSecurityTest() {
+    $("eventType").value = "unauthorized_access";
+    $("zone").value = "Server Room";
+    $("severity").value = "medium";
+    $("frequency").value = "3";
+    $("failedAttempts").value = "0";
+    $("testStatus").textContent = "WAITING - SIMULATION ONLY";
+    $("testResult").textContent = "Configure a scenario and run it. No production data will be changed.";
+    $("recommendation").innerHTML = "<div class=\"insight\">Simulated recommendations will appear after a scenario is run.</div>";
 }
 
 
@@ -540,6 +552,12 @@ $("runSecurityTest")
     .addEventListener(
         "click",
         analyzeSecurityEvent
+    );
+
+$("resetSecurityTest")
+    .addEventListener(
+        "click",
+        resetSecurityTest
     );
 
 
