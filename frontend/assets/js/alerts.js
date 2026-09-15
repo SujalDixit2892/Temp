@@ -6,43 +6,6 @@ let severityChart = null;
 const $ = id => document.getElementById(id);
 
 
-const profiles = {
-
-    "HQ Tower": {
-        active: 8,
-        critical: 1,
-        high: 3,
-        resolved: 31,
-        response: 18
-    },
-
-    "Operations Center": {
-        active: 11,
-        critical: 2,
-        high: 4,
-        resolved: 46,
-        response: 23
-    },
-
-    "Manufacturing Plant": {
-        active: 16,
-        critical: 3,
-        high: 7,
-        resolved: 62,
-        response: 31
-    },
-
-    "Warehouse": {
-        active: 5,
-        critical: 0,
-        high: 2,
-        resolved: 24,
-        response: 14
-    }
-
-};
-
-
 let alerts = [
 
     {
@@ -115,57 +78,24 @@ let alerts = [
 
 
 function refresh() {
-
-    const profile =
-        profiles[$("facility").value] || Object.values(profiles)[0];
-
-    const multiplier =
-        Number($("duration").value) / 7;
-
-
-    $("activeAlerts").textContent =
-        Math.max(
-            1,
-            Math.round(profile.active * multiplier)
-        );
-
-
-    $("criticalAlerts").textContent =
-        Math.max(
-            0,
-            Math.round(profile.critical * multiplier)
-        );
-
-
-    $("highAlerts").textContent =
-        Math.max(
-            1,
-            Math.round(profile.high * multiplier)
-        );
-
-
-    $("resolvedAlerts").textContent =
-        Math.round(
-            profile.resolved * multiplier
-        );
-
-
-    $("responseTime").textContent =
-        `${Math.round(profile.response / Math.max(0.8, Math.sqrt(multiplier)))}m`;
-
-
-    renderCharts(
-        profile,
-        multiplier
-    );
-
-
+    const activeAlerts = alerts.filter(alert => alert.status === "ACTIVE");
+    const counts = ["Critical", "High", "Medium", "Low"].reduce((result, severity) => {
+        result[severity] = activeAlerts.filter(alert => alert.severity === severity).length;
+        return result;
+    }, {});
+    $("activeAlerts").textContent = activeAlerts.length;
+    $("criticalAlerts").textContent = counts.Critical;
+    $("highAlerts").textContent = counts.High;
+    $("resolvedAlerts").textContent = counts.Medium;
+    $("responseTime").textContent = counts.Low;
+    renderCharts(counts);
+    renderPriority(activeAlerts);
+    renderAgentBreakdown(activeAlerts);
     renderAlerts();
-
 }
 
 
-function renderCharts(profile, multiplier) {
+function renderCharts(counts) {
 
     const labels = [
         "00",
@@ -177,22 +107,8 @@ function renderCharts(profile, multiplier) {
     ];
 
 
-    const base =
-        profile.active /
-        3;
-
-
-    const values =
-        labels.map(
-            () =>
-                Math.max(
-                    1,
-                    Math.round(
-                        base *
-                        (0.6 + Math.random())
-                    )
-                )
-        );
+    const total = Object.values(counts).reduce((sum, count) => sum + count, 0);
+    const values = [counts.Low, counts.Medium, counts.High, total, counts.Critical, total];
 
 
     if (alertChart)
@@ -258,12 +174,7 @@ function renderCharts(profile, multiplier) {
                     datasets: [
 
                         {
-                            data: [
-                                Math.max(1, profile.critical),
-                                profile.high,
-                                Math.max(2, profile.active - profile.high),
-                                3
-                            ]
+                            data: [counts.Critical, counts.High, counts.Medium, counts.Low]
                         }
 
                     ]
@@ -281,6 +192,28 @@ function renderCharts(profile, multiplier) {
 
         );
 
+}
+
+function renderPriority(activeAlerts) {
+    const rank = { Critical: 4, High: 3, Medium: 2, Low: 1 };
+    const priority = [...activeAlerts].sort((a, b) =>
+        (rank[b.severity] || 0) - (rank[a.severity] || 0)
+    )[0];
+    $("priorityTitle").textContent = priority ? priority.title : "No active priority alert";
+    $("prioritySeverity").textContent = priority ? priority.severity.toUpperCase() : "CLEAR";
+    $("priorityAlert").innerHTML = priority
+        ? `<strong>${priority.agent} Agent</strong> · ${priority.asset}<br>${priority.detail}`
+        : "No active alert is currently available.";
+}
+
+function renderAgentBreakdown(activeAlerts) {
+    const counts = activeAlerts.reduce((result, alert) => {
+        result[alert.agent] = (result[alert.agent] || 0) + 1;
+        return result;
+    }, {});
+    $("agentBreakdown").innerHTML = Object.entries(counts).map(([agent, count]) => `
+        <div class="health-distribution-item"><span>${agent}</span><strong>${count}</strong></div>
+    `).join("") || `<div class="insight">No active agent alerts.</div>`;
 }
 
 
@@ -330,7 +263,7 @@ function renderAlerts() {
                     <span>
                         ${alert.agent} Agent ·
                         ${alert.asset} ·
-                        ${alert.time}
+                        ${alert.time}${alert.status === "TEST" ? " · TEST / SIMULATION" : ""}
                     </span>
 
                 </div>

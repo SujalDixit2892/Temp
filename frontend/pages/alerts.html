@@ -135,22 +135,22 @@
 </div>
 
 
-<!-- KPI -->
+<!-- ALERT SUMMARY -->
 
 <div class="agent-grid">
 
     <div class="metric">
 
         <span class="metric-label">
-            ACTIVE ALERTS
+            TOTAL ACTIVE ALERTS
         </span>
 
         <strong id="activeAlerts" class="metric-value">
-            8
+            0
         </strong>
 
         <span class="metric-sub">
-            Require attention
+            Current queue
         </span>
 
     </div>
@@ -163,11 +163,11 @@
         </span>
 
         <strong id="criticalAlerts" class="metric-value">
-            1
+            0
         </strong>
 
         <span class="metric-sub">
-            Immediate review
+            Active incidents
         </span>
 
     </div>
@@ -176,15 +176,15 @@
     <div class="metric">
 
         <span class="metric-label">
-            HIGH PRIORITY
+            HIGH
         </span>
 
         <strong id="highAlerts" class="metric-value">
-            3
+            0
         </strong>
 
         <span class="metric-sub">
-            Operational impact
+            Active incidents
         </span>
 
     </div>
@@ -193,15 +193,15 @@
     <div class="metric">
 
         <span class="metric-label">
-            RESOLVED
+            MEDIUM
         </span>
 
         <strong id="resolvedAlerts" class="metric-value">
-            31
+            0
         </strong>
 
         <span class="metric-sub">
-            Selected period
+            Active incidents
         </span>
 
     </div>
@@ -210,15 +210,15 @@
     <div class="metric">
 
         <span class="metric-label">
-            AVG RESPONSE
+            LOW
         </span>
 
         <strong id="responseTime" class="metric-value">
-            18m
+            0
         </strong>
 
         <span class="metric-sub">
-            Mean resolution time
+            Active incidents
         </span>
 
     </div>
@@ -227,6 +227,31 @@
 
 
 <!-- ALERT ANALYTICS -->
+
+<div class="dashboard-row equal">
+
+<section class="panel">
+    <div class="panel-header">
+        <div>
+            <span class="panel-label">PRIORITY ALERT</span>
+            <h2 id="priorityTitle">No active priority alert</h2>
+        </div>
+        <span id="prioritySeverity" class="result-status">CLEAR</span>
+    </div>
+    <div id="priorityAlert" class="insight">No active alert is currently available.</div>
+</section>
+
+<section class="panel">
+    <div class="panel-header">
+        <div>
+            <span class="panel-label">AGENT BREAKDOWN</span>
+            <h2>Current alert sources</h2>
+        </div>
+    </div>
+    <div id="agentBreakdown" class="health-distribution"></div>
+</section>
+
+</div>
 
 <div class="dashboard-row">
 

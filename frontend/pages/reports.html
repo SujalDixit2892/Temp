@@ -5,6 +5,17 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Executive Reports | FacilityOps</title>
 <link rel="stylesheet" href="../assets/css/styles.css">
+<style>
+.report-meta { display:flex; gap:18px; flex-wrap:wrap; color:#8e99a8; font-size:11px; margin:18px 0; }
+.report-meta strong { display:block; color:#e8edf3; font-size:12px; margin-top:4px; }
+.report-action { margin-left:auto; }
+.report-table { width:100%; border-collapse:collapse; font-size:12px; }
+.report-table th,.report-table td { padding:9px 0; border-bottom:1px solid #202833; text-align:left; }
+.report-table th { color:#727e8c; font-size:10px; letter-spacing:.8px; }
+.report-table td:last-child,.report-table th:last-child { text-align:right; }
+.report-note { color:#8e99a8; font-size:12px; line-height:1.6; }
+@media print { .sidebar,.topbar,.agent-controls,.report-action,#generateReport,#refreshReport { display:none!important; } .main { margin:0; } .content { padding:20px; } }
+</style>
 </head>
 
 <body>
@@ -130,8 +141,17 @@
 
         </select>
 
+        <button id="printReport" class="test-button report-action" type="button">PRINT REPORT</button>
+
     </div>
 
+</div>
+
+<div class="report-meta">
+    <div>FACILITY<strong id="reportFacility">--</strong></div>
+    <div>DURATION<strong id="reportDuration">--</strong></div>
+    <div>DATA AS OF<strong id="reportTimestamp">--</strong></div>
+    <div>DATA STATUS<strong id="reportDataStatus">LOADING</strong></div>
 </div>
 
 
@@ -146,7 +166,7 @@
         </span>
 
         <strong id="energy" class="metric-value">
-            4,480
+            --
         </strong>
 
         <span id="energySub" class="metric-sub">
@@ -163,7 +183,7 @@
         </span>
 
         <strong id="cost" class="metric-value">
-            ₹35.8K
+            --
         </strong>
 
         <span class="metric-sub">
@@ -180,7 +200,7 @@
         </span>
 
         <strong id="savings" class="metric-value">
-            11.8%
+            --
         </strong>
 
         <span class="metric-sub">
@@ -197,7 +217,7 @@
         </span>
 
         <strong id="risk" class="metric-value">
-            31/100
+            --
         </strong>
 
         <span class="metric-sub">
@@ -214,7 +234,7 @@
         </span>
 
         <strong id="asset" class="metric-value">
-            89%
+            --
         </strong>
 
         <span class="metric-sub">
@@ -230,17 +250,17 @@
 
 <div class="dashboard-row">
 
-<section class="panel">
+<section id="financialPanel" class="panel">
 
     <div class="panel-header">
 
         <div>
             <span class="panel-label">
-                PERFORMANCE TREND
+                ENERGY PERFORMANCE
             </span>
 
             <h2>
-                Operational Performance
+                Actual vs expected energy
             </h2>
         </div>
 
@@ -262,11 +282,11 @@
 
         <div>
             <span class="panel-label">
-                RESOURCE MIX
+                ASSET / MAINTENANCE HEALTH
             </span>
 
             <h2>
-                Operational Distribution
+                Health distribution
             </h2>
         </div>
 
@@ -278,6 +298,8 @@
         <canvas id="resourceChart"></canvas>
 
     </div>
+
+    <div id="maintenanceHealth"></div>
 
 </section>
 
@@ -293,17 +315,17 @@
         <div>
 
             <span class="panel-label">
-                AGENT PERFORMANCE
+                OCCUPANCY UTILIZATION
             </span>
 
             <h2>
-                Intelligence Contribution
+                Current zone utilization
             </h2>
 
         </div>
 
         <span class="result-status">
-            CONSOLIDATED
+            LIVE DATA
         </span>
 
     </div>
@@ -325,11 +347,11 @@
         <div>
 
             <span class="panel-label">
-                FINANCIAL IMPACT
+                COST / OPTIMIZATION
             </span>
 
             <h2>
-                Optimization Opportunities
+                Available financial signals
             </h2>
 
         </div>
@@ -349,11 +371,11 @@
         <div>
 
             <span class="panel-label">
-                RISK OUTLOOK
+                SECURITY SUMMARY
             </span>
 
             <h2>
-                Priority Areas
+                Threat and anomaly status
             </h2>
 
         </div>

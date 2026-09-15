@@ -117,8 +117,7 @@ function renderCharts(
     const trend =
         labels.map((_, i) =>
             Math.round(
-                daily *
-                (0.94 + Math.sin(i * 0.55) * 0.035)
+                daily * (0.98 + (Math.random() * 0.04 - 0.02) + (i * 0.001))
             )
         );
 
