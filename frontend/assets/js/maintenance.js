@@ -73,9 +73,58 @@ function formatProbability(value) {
         : "--";
 }
 
+function escapeHtml(value) {
+    return String(value ?? "--")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function getHealthState(asset) {
+    if (asset.status !== "success") return "unavailable";
+
+    const probability = Number(asset.failure_probability);
+    if (!Number.isFinite(probability)) return "unavailable";
+    if (probability >= 0.5) return "critical";
+    if (probability >= 0.15) return "warning";
+    return "healthy";
+}
+
+function renderAssetHealthMatrix() {
+    const container = $("assetHealthMatrix");
+
+    if (!assets.length) {
+        container.innerHTML = `
+            <tr>
+                <td class="asset-matrix-empty" colspan="5">No assets returned for this facility.</td>
+            </tr>`;
+        return;
+    }
+
+    container.innerHTML = assets.map(asset => {
+        const state = getHealthState(asset);
+        const status = asset.status === "success" ? state : asset.status ?? "unavailable";
+
+        return `
+            <tr class="asset-health-row ${state}">
+                <td>
+                    <strong>${escapeHtml(asset.asset_id ?? "Asset")}</strong>
+                    <span class="asset-type">${escapeHtml(asset.asset_type ?? "Monitored asset")}</span>
+                </td>
+                <td class="health-value">${asset.status === "success" ? `${escapeHtml(formatScore(asset.health_score))}%` : "--"}</td>
+                <td>${asset.status === "success" ? escapeHtml(formatProbability(asset.failure_probability)) : "--"}</td>
+                <td><span class="health-status">${escapeHtml(status)}</span></td>
+                <td>${escapeHtml(asset.predicted_issue ?? "Analysis unavailable")}</td>
+            </tr>`;
+    }).join("");
+}
+
 function renderAssets() {
 
     const container = $("assetList");
+    renderAssetHealthMatrix();
 
     if (!assets.length) {
         if (chart) {

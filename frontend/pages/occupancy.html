@@ -131,8 +131,12 @@
         </div>
         <span class="live">LIVE DATA</span>
     </div>
-    <div class="chart-box">
-        <canvas id="occupancyChart"></canvas>
+    <div class="occupancy-heatmap" id="occupancyHeatmap" aria-label="Occupancy heatmap"></div>
+    <div class="heatmap-legend" aria-label="Occupancy intensity legend">
+        <span><i class="legend-swatch low"></i>Low</span>
+        <span><i class="legend-swatch normal"></i>Normal</span>
+        <span><i class="legend-swatch high"></i>High</span>
+        <span><i class="legend-swatch critical"></i>Critical</span>
     </div>
 </section>
 
@@ -216,7 +220,6 @@
 </main>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script type="module" src="../assets/js/occupancy.js"></script>
 </body>
 </html>

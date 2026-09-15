@@ -379,6 +379,14 @@ button {
     height: 185px !important;
 }
 
+.chart-empty {
+    display: grid;
+    height: 185px;
+    place-items: center;
+    color: #687483;
+    font-size: 11px;
+}
+
 .chart-axis {
     position: absolute;
     bottom: -20px;
@@ -451,6 +459,121 @@ button {
     gap: 4px;
     height: 155px;
 }
+
+.occupancy-heatmap {
+    --heatmap-columns: 1;
+    display: grid;
+    grid-template-columns: minmax(112px, 1.4fr) repeat(var(--heatmap-columns), minmax(70px, 1fr));
+    gap: 5px;
+    min-height: 190px;
+    position: relative;
+    overflow-x: auto;
+    padding: 2px;
+}
+
+.heatmap-corner,
+.heatmap-time,
+.heatmap-row-label {
+    display: flex;
+    align-items: center;
+    min-height: 34px;
+    color: #738091;
+    font-size: 9px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.heatmap-time {
+    justify-content: center;
+    color: #9aa7b5;
+}
+
+.heatmap-row-label {
+    padding: 0 8px;
+    background: #111922;
+    border: 1px solid #202c38;
+    border-radius: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.occupancy-heatmap .heat-cell {
+    min-width: 70px;
+    min-height: 42px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: #e8edf3;
+    cursor: help;
+    font-size: 10px;
+    font-weight: 700;
+    transition: border-color .15s ease, transform .15s ease;
+}
+
+.occupancy-heatmap .heat-cell:hover,
+.occupancy-heatmap .heat-cell:focus-visible {
+    border-color: #dce7f2;
+    outline: none;
+    transform: translateY(-1px);
+}
+
+.heat-cell.low { background: #244238; }
+.heat-cell.normal { background: #39604e; }
+.heat-cell.high { background: #8b6734; }
+.heat-cell.critical { background: #914747; }
+.heat-cell.empty { background: #151e27; border-color: #202c38; cursor: default; }
+
+.heatmap-empty {
+    grid-column: 1 / -1;
+    display: grid;
+    place-items: center;
+    min-height: 150px;
+    color: #687483;
+    font-size: 11px;
+}
+
+.heatmap-tooltip {
+    position: absolute;
+    z-index: 2;
+    left: 50%;
+    bottom: 8px;
+    max-width: calc(100% - 16px);
+    padding: 8px 10px;
+    background: #0d1319;
+    border: 1px solid #3a4856;
+    border-radius: 4px;
+    color: #dce5ee;
+    font-size: 10px;
+    pointer-events: none;
+    transform: translateX(-50%);
+}
+
+.heatmap-tooltip[aria-hidden="true"] { display: none; }
+
+.heatmap-legend {
+    display: flex;
+    gap: 14px;
+    margin-top: 12px;
+    color: #84909e;
+    font-size: 10px;
+}
+
+.heatmap-legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.legend-swatch {
+    width: 9px;
+    height: 9px;
+    border-radius: 2px;
+}
+
+.legend-swatch.low { background: #244238; }
+.legend-swatch.normal { background: #39604e; }
+.legend-swatch.high { background: #8b6734; }
+.legend-swatch.critical { background: #914747; }
 
 .heatmap div {
     border-radius: 3px;
@@ -808,6 +931,88 @@ button {
 .data-table td {
     padding: 10px 9px;
     border-bottom: 1px solid #1d2630;
+}
+
+.asset-health-panel {
+    margin-bottom: 14px;
+}
+
+.asset-health-table {
+    min-width: 680px;
+}
+
+.asset-health-table th,
+.asset-health-table td {
+    padding: 12px 10px;
+}
+
+.asset-health-table tbody tr {
+    border-left: 3px solid transparent;
+}
+
+.asset-health-table tbody tr.healthy {
+    border-left-color: #4fa982;
+}
+
+.asset-health-table tbody tr.warning {
+    border-left-color: #d6a15d;
+    background: #191a1a;
+}
+
+.asset-health-table tbody tr.critical {
+    border-left-color: #bd5a5a;
+    background: #1d171a;
+}
+
+.asset-health-table tbody tr.unavailable {
+    border-left-color: #687789;
+    color: #7c8794;
+}
+
+.asset-health-table td:first-child strong,
+.asset-type {
+    display: block;
+}
+
+.asset-type {
+    color: #687789;
+    font-size: 9px;
+    margin-top: 3px;
+}
+
+.health-value {
+    font-weight: 700;
+}
+
+.health-status {
+    display: inline-flex;
+    min-width: 72px;
+    justify-content: center;
+    padding: 4px 7px;
+    border: 1px solid currentColor;
+    border-radius: 4px;
+    color: #65c99b;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+.warning .health-status {
+    color: #d6a15d;
+}
+
+.critical .health-status {
+    color: #bd5a5a;
+}
+
+.unavailable .health-status {
+    color: #7c8794;
+}
+
+.asset-matrix-empty {
+    color: #687789;
+    text-align: center;
 }
 
 .heatmap {

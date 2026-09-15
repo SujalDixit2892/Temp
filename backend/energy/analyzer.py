@@ -48,6 +48,13 @@ def analyze_history(artifact: dict, history_df: pd.DataFrame, facility_type: str
     small absolute floor (avoids flagging noise on tiny consumers) or 25%
     of the predicted value.
     """
+    history = [
+        {
+            "date": row["timestamp"].strftime("%Y-%m-%d"),
+            "actual_kwh": round(float(row["electricity_kwh"]), 1),
+        }
+        for _, row in history_df.sort_values("timestamp").iterrows()
+    ]
     categories = artifact["facility_type_categories"]
     feat = _engineer_features(history_df, facility_type, total_area_sqft, total_floors, categories)
     feat = feat.dropna(subset=["lag_1", "rolling_mean_7", "rolling_mean_30"]).reset_index(drop=True)
@@ -56,6 +63,7 @@ def analyze_history(artifact: dict, history_df: pd.DataFrame, facility_type: str
         return {
             "status": "insufficient_history",
             "anomalies": [],
+            "history": history,
             "forecast_next_day_kwh": None,
         }
 
@@ -64,6 +72,18 @@ def analyze_history(artifact: dict, history_df: pd.DataFrame, facility_type: str
     feat["residual"] = feat["electricity_kwh"] - feat["predicted_kwh"]
     feat["threshold"] = feat["predicted_kwh"].apply(lambda p: max(200.0, 0.25 * p))
     feat["is_wastage"] = feat["residual"] > feat["threshold"]
+
+    predictions_by_date = {
+        row["timestamp"].strftime("%Y-%m-%d"): {
+            "predicted_kwh": round(float(row["predicted_kwh"]), 1),
+            "is_anomaly": bool(row["is_wastage"]),
+        }
+        for _, row in feat.iterrows()
+    }
+    for point in history:
+        prediction = predictions_by_date.get(point["date"])
+        if prediction:
+            point.update(prediction)
 
     anomalies = feat[feat["is_wastage"]].tail(10)
     anomaly_list = [
@@ -100,6 +120,7 @@ def analyze_history(artifact: dict, history_df: pd.DataFrame, facility_type: str
         "status": "success",
         "days_evaluated": len(feat),
         "anomalies": anomaly_list,
+        "history": history,
         "wastage_days_count": int(feat["is_wastage"].sum()),
         "forecast_next_day": next_day.strftime("%Y-%m-%d"),
         "forecast_next_day_kwh": round(forecast_kwh, 1),
