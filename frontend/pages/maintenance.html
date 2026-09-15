@@ -121,11 +121,16 @@
     <div class="panel-header">
         <div>
             <span class="panel-label">ASSET HEALTH</span>
-            <h2>Maintenance Risk Distribution</h2>
+            <h2>Asset Health Distribution</h2>
         </div>
         <span class="live">ML ACTIVE</span>
     </div>
-    <div class="chart-box">
+    <div id="healthDistribution" class="health-distribution"></div>
+    <div class="risk-chart-heading">
+        <span class="panel-label">FAILURE RISK</span>
+        <span class="chart-note">Highest-risk assets</span>
+    </div>
+    <div class="chart-box risk-chart-box">
         <canvas id="maintenanceChart"></canvas>
     </div>
 </section>

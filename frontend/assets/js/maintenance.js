@@ -86,10 +86,40 @@ function getHealthState(asset) {
     if (asset.status !== "success") return "unavailable";
 
     const probability = Number(asset.failure_probability);
-    if (!Number.isFinite(probability)) return "unavailable";
-    if (probability >= 0.5) return "critical";
-    if (probability >= 0.15) return "warning";
+    const score = Number(asset.health_score);
+    if (!Number.isFinite(probability) && !Number.isFinite(score)) return "unavailable";
+    if (asset.high_risk === true || probability >= 0.5 || score <= 50) return "critical";
+    if (probability >= 0.15 || score < 85) return "warning";
     return "healthy";
+}
+
+function riskSortedAssets() {
+    return assets
+        .filter(asset => asset.status === "success" && Number.isFinite(Number(asset.failure_probability)))
+        .sort((left, right) => Number(right.failure_probability) - Number(left.failure_probability));
+}
+
+function riskColor(probability) {
+    const percent = Number(probability) * 100;
+    if (percent >= 80) return "#bd5a5a";
+    if (percent >= 60) return "#d6c15d";
+    if (percent >= 40) return "#d68a5d";
+    return "#65c99b";
+}
+
+function renderHealthDistribution() {
+    const container = $("healthDistribution");
+    const assessed = assets.filter(asset => getHealthState(asset) !== "unavailable");
+    const counts = ["healthy", "warning", "critical"].map(state => ({
+        state,
+        count: assessed.filter(asset => getHealthState(asset) === state).length
+    }));
+
+    container.innerHTML = counts.map(({ state, count }) => `
+        <div class="health-distribution-item ${state}">
+            <div><span class="health-dot"></span><strong>${state}</strong></div>
+            <span>${count} <small>${assessed.length ? `${((count / assessed.length) * 100).toFixed(0)}%` : "0%"}</small></span>
+        </div>`).join("");
 }
 
 function renderAssetHealthMatrix() {
@@ -103,7 +133,10 @@ function renderAssetHealthMatrix() {
         return;
     }
 
-    container.innerHTML = assets.map(asset => {
+    container.innerHTML = [...assets].sort((left, right) => {
+        const risk = asset => Number.isFinite(Number(asset.failure_probability)) ? Number(asset.failure_probability) : -1;
+        return risk(right) - risk(left);
+    }).map(asset => {
         const state = getHealthState(asset);
         const status = asset.status === "success" ? state : asset.status ?? "unavailable";
 
@@ -124,6 +157,7 @@ function renderAssetHealthMatrix() {
 function renderAssets() {
 
     const container = $("assetList");
+    renderHealthDistribution();
     renderAssetHealthMatrix();
 
     if (!assets.length) {
@@ -136,7 +170,10 @@ function renderAssets() {
         return;
     }
 
-    container.innerHTML = assets.slice(0, 6).map(asset => `
+    const priorityAssets = riskSortedAssets()
+        .filter(asset => getHealthState(asset) !== "healthy")
+        .slice(0, 3);
+    container.innerHTML = priorityAssets.length ? priorityAssets.map(asset => `
         <div class="agent-row">
             <div class="agent-icon">M</div>
             <div class="agent-info">
@@ -151,7 +188,7 @@ function renderAssets() {
                 ${asset.status === "success" ? `${formatScore(asset.health_score)}/100 · ${formatProbability(asset.failure_probability)}` : (asset.status ?? "UNAVAILABLE")}
             </span>
         </div>
-    `).join("");
+    `).join("") : `<div class="insight">No assessed assets require attention.</div>`;
 
     renderChart();
 }
@@ -167,15 +204,21 @@ function renderChart() {
     chart = new Chart(canvas, {
         type: "bar",
         data: {
-            labels: assets.slice(0, 8).map(a => a.asset_id ?? "Asset"),
+            indexAxis: "y",
+            labels: riskSortedAssets().slice(0, 8).map(a => a.asset_id ?? "Asset"),
             datasets: [{
-                label: "Asset Health Score",
-                data: assets.slice(0, 8).map(a => Number.isFinite(Number(a.health_score)) ? Number(a.health_score) : null)
+                label: "Failure Probability",
+                data: riskSortedAssets().slice(0, 8).map(a => Number(a.failure_probability) * 100),
+                backgroundColor: riskSortedAssets().slice(0, 8).map(a => riskColor(a.failure_probability)),
+                borderRadius: 2,
+                barThickness: 13
             }]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            scales: { x: { beginAtZero: true, max: 100 } },
+            plugins: { legend: { display: false } }
         }
     });
 }
